@@ -1,9 +1,10 @@
-import kontra, {GameLoop, init, initKeys, keyPressed, Sprite, SpriteSheet} from 'kontra';
+import kontra, {GameLoop, init, initKeys, SpriteSheet} from 'kontra';
+import Player from "./player";
 
 init();
 initKeys();
 
-kontra.getContext().scale(6, 6);
+kontra.getContext().scale(3, 3);
 
 // Load Image Path
 kontra.setImagePath('assets');
@@ -12,7 +13,7 @@ kontra.load(
     "person-Sheet.png",
 ).then(
     function () {
-        let spriteSheet = SpriteSheet({
+        let playerSheet = SpriteSheet({
             image: kontra.imageAssets['person-Sheet'],
             frameWidth: 7,
             frameHeight: 14,
@@ -28,55 +29,14 @@ kontra.load(
             }
         });
 
-        let sprite = Sprite({
-            x: 10,
-            y: 10,
-            anchor: {x: 0.5, y: 0.5},
-            animations: spriteSheet.animations
-        })
-
-        let dir = 1;
-        let x_speed = 0.6;
-        let y_speed = 0.4;
+        let player = new Player(playerSheet);
 
         let loop = GameLoop({  // create the main game loop
             update: function () { // update the game state
-                sprite.update();
-
-                let move = false;
-                if (keyPressed('left')) {
-                    if (dir == 1) {
-                        dir = -1;
-                    }
-
-                    sprite.x += dir * x_speed;
-                    move = true;
-                } else if (keyPressed('right')) {
-                    if (dir == -1) {
-                        dir = 1;
-                    }
-
-                    sprite.x += dir * x_speed;
-                    move = true;
-                }
-
-                if (keyPressed('up')) {
-                    sprite.y -= y_speed;
-                    move = true;
-                } else if (keyPressed('down')) {
-                    sprite.y += y_speed;
-                    move = true;
-                }
-
-                if (!move) {
-                    sprite.playAnimation("idle");
-                    sprite.animations["walk"].reset();
-                } else {
-                    sprite.playAnimation("walk");
-                }
+                player.update();
             },
             render: function () { // render the game state
-                sprite.render();
+                player.render();
             }
         });
 
