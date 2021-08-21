@@ -1,45 +1,28 @@
-import kontra, {GameLoop, init, initKeys, SpriteSheet} from 'kontra';
-import Player from "./player";
+import kontra, {GameLoop, init, initKeys} from 'kontra';
+import Player from "./models/player";
+import Entity from "./models/entity";
 
 init();
 initKeys();
 
 kontra.getContext().scale(3, 3);
 
-// Load Image Path
-kontra.setImagePath('assets');
+const entities: Array<Entity> = [
+    new Player(),
+    // new NPC()
+]
 
-kontra.load(
-    "person-Sheet.png",
-).then(
-    function () {
-        let playerSheet = SpriteSheet({
-            image: kontra.imageAssets['person-Sheet'],
-            frameWidth: 7,
-            frameHeight: 14,
-            animations: {
-                idle: {
-                    frames: 1,
-                    loop: false,
-                },
-                walk: {
-                    frames: [0, 1, 2, 1],
-                    frameRate: 6,
-                }
-            }
-        });
-
-        let player = new Player(playerSheet);
-
-        let loop = GameLoop({  // create the main game loop
-            update: function () { // update the game state
-                player.update();
-            },
-            render: function () { // render the game state
-                player.render();
-            }
-        });
-
-        loop.start();    // start the game
+const loop = GameLoop({  // create the main game loop
+    update: function () { // update the game state
+        for (const entity of entities) {
+            entity.update()
+        }
+    },
+    render: function () { // render the game state
+        for (const entity of entities) {
+            entity.render()
+        }
     }
-)
+});
+
+loop.start();    // start the game
