@@ -8,6 +8,8 @@ import clear from 'rollup-plugin-clear'
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
 import kontra from 'rollup-plugin-kontra'
+import ttypescript from 'ttypescript';
+import typescript from 'rollup-plugin-typescript2';
 
 // dev build if watching, prod build if not
 const production = !process.env.ROLLUP_WATCH;
@@ -75,5 +77,10 @@ export default {
             port: 8080
         }),
         !production && livereload(),
+        typescript({
+            typescript: ttypescript,
+            useTsconfigDeclarationDir: true,
+            emitDeclarationOnly: true,
+        }),
     ]
 };
