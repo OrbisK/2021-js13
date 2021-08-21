@@ -1,4 +1,5 @@
 import kontra, {GameLoop, init, initKeys, keyPressed, Sprite, SpriteSheet} from 'kontra';
+import loadedAssets from "./loadedAssets";
 
 
 init();
@@ -12,13 +13,26 @@ kontra.getContext().scale(SCALE, SCALE);
 // // Load Image Path
 // kontra.setImagePath('assets');
 
+const assetMapping = loadedAssets.map((a, index) => {
+    return {...a, id: +index}
+})
 
-kontra.load(
-    "assets/chars.png",
-).then(
-    function () {
+
+kontra.load(...assetMapping.map(a => a.path)).then((assets) => {
+        const _getAsset = (name:string):any => {
+            const asset = assetMapping.find(a=>{
+                console.log(a.name=== name)
+                return a.name===name;
+            })
+            if(!asset?.id && asset?.id!==0){
+                console.warn(`Asset "${name}" not found.`)
+                return undefined
+            }
+            return assets[asset.id]
+        }
+
         let spriteSheet = SpriteSheet({
-            image: kontra.imageAssets['assets/chars'],
+            image: _getAsset('chars'),
             frameWidth: 7,
             frameHeight: 14,
             animations: {
