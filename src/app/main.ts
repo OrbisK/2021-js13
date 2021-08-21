@@ -1,24 +1,24 @@
-import kontra, {GameLoop, keyPressed, Sprite, SpriteSheet} from 'kontra';
-//
-//
-// const kontra = require('kontra')
+import kontra, {GameLoop, init, initKeys, keyPressed, Sprite, SpriteSheet} from 'kontra';
 
-// let {init, Sprite, GameLoop} = kontra
-// let {canvas} = init();
+
+init();
+initKeys();
+
 
 const SCALE = 6;
+console.log(kontra.getContext())
 kontra.getContext().scale(SCALE, SCALE);
 
-// Load Image Path
-kontra.setImagePath('assets');
+// // Load Image Path
+// kontra.setImagePath('assets');
 
 
 kontra.load(
-    "person_sheet_min.png",
+    "assets/chars.png",
 ).then(
     function () {
         let spriteSheet = SpriteSheet({
-            image: kontra.imageAssets['person_sheet_min'],
+            image: kontra.imageAssets['assets/chars'],
             frameWidth: 7,
             frameHeight: 14,
             animations: {
@@ -49,7 +49,6 @@ kontra.load(
                 sprite.update();
 
                 let move = false;
-
                 if (keyPressed('left')) {
                     if (dir == 1) {
                         dir = -1;
