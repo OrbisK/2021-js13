@@ -1,15 +1,11 @@
 import kontra, {GameLoop, init, initKeys, keyPressed, Sprite, SpriteSheet} from 'kontra';
 
-
 init();
 initKeys();
 
+kontra.getContext().scale(6, 6);
 
-const SCALE = 6;
-console.log(kontra.getContext())
-kontra.getContext().scale(SCALE, SCALE);
-
-// // Load Image Path
+// Load Image Path
 kontra.setImagePath('assets');
 
 kontra.load(
