@@ -10,15 +10,14 @@ console.log(kontra.getContext())
 kontra.getContext().scale(SCALE, SCALE);
 
 // // Load Image Path
-// kontra.setImagePath('assets');
-
+kontra.setImagePath('assets');
 
 kontra.load(
-    "assets/chars.png",
+    "person-Sheet.png",
 ).then(
     function () {
         let spriteSheet = SpriteSheet({
-            image: kontra.imageAssets['assets/chars'],
+            image: kontra.imageAssets['person-Sheet'],
             frameWidth: 7,
             frameHeight: 14,
             animations: {
