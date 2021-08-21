@@ -15,12 +15,12 @@ const assetMapping = loadedAssets.map((a, index) => {
 
 
 kontra.load(...assetMapping.map(a => a.path)).then((assets) => {
-        const _getAsset = (name:string):any => {
-            const asset = assetMapping.find(a=>{
-                console.log(a.name=== name)
-                return a.name===name;
+        const _getAsset = (name: string): any => {
+            const asset = assetMapping.find(a => {
+                console.log(a.name === name)
+                return a.name === name;
             })
-            if(!asset?.id && asset?.id!==0){
+            if (!asset?.id && asset?.id !== 0) {
                 console.warn(`Asset "${name}" not found.`)
                 return undefined
             }
@@ -28,7 +28,7 @@ kontra.load(...assetMapping.map(a => a.path)).then((assets) => {
         }
 
         let spriteSheet = SpriteSheet({
-            image: _getAsset('chars'),
+            image: _getAsset('person'),
             frameWidth: 7,
             frameHeight: 14,
             animations: {

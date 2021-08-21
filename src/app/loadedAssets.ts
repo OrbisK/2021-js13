@@ -1,6 +1,6 @@
 export default [
     {
-        name: "chars",
-        path: "assets/chars.png"
+        name: "person",
+        path: "person-sheet.png"
     },
 ]
