@@ -7,7 +7,6 @@ export default class Player extends Entity {
 
     constructor(xSpeed = 0.6, ySpeed = 0.4, assetId = 'player') {
         super({assetId});
-
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
         this.animations = SpriteSheet({
@@ -38,9 +37,11 @@ export default class Player extends Entity {
 
         if (keyPressed('left')) {
             vx -= this.xSpeed;
+            this.direction = "left";
         }
         if (keyPressed('right')) {
             vx += this.xSpeed;
+            this.direction = "right";
         }
         if (keyPressed('up')) {
             vy -= this.ySpeed;
@@ -56,6 +57,13 @@ export default class Player extends Entity {
             this.animations["walk"].reset();
         } else {
             this.playAnimation("walk");
+
+            if (vy + this.y < 10 || vy + this.y > 140) {
+                vy = 0;
+            }
+            if (vx + this.x < 4) {
+                vx = 0;
+            }
             this.x += vx;
             this.y += vy;
         }

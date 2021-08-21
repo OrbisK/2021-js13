@@ -15,7 +15,7 @@ export default class Entity extends Sprite.class {
         const sprite = {
             x: 10,
             y: 10,
-            anchor: {x: 0.5, y: 0.5},
+            anchor: {x: 0.5, y: 0.8},
         }
         super(sprite)
         this.asset = _getAsset(assetId);

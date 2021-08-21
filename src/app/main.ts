@@ -1,27 +1,25 @@
 import kontra, {GameLoop, init, initKeys} from 'kontra';
 import Player from "./models/player";
-import Entity from "./models/entity";
+import NPC from "./models/npc";
+import Scene from "./models/scene";
+import {SCALE} from "./globals";
 
 init();
 initKeys();
 
-kontra.getContext().scale(3, 3);
+kontra.getContext().scale(SCALE, SCALE);
 
-const entities: Array<Entity> = [
+const scene = new Scene([
     new Player(),
-    // new NPC()
-]
+    new NPC(),
+]);
 
 const loop = GameLoop({  // create the main game loop
     update: function () { // update the game state
-        for (const entity of entities) {
-            entity.update()
-        }
+        scene.update();
     },
     render: function () { // render the game state
-        for (const entity of entities) {
-            entity.render()
-        }
+        scene.render();
     }
 });
 
