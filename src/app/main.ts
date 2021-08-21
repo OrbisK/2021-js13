@@ -1,35 +1,91 @@
-import kontra from 'kontra';
+import kontra, {GameLoop, keyPressed, Sprite, SpriteSheet} from 'kontra';
 //
 //
 // const kontra = require('kontra')
 
-let {init, Sprite, GameLoop} = kontra
+// let {init, Sprite, GameLoop} = kontra
+// let {canvas} = init();
 
-let {canvas} = init();
+const SCALE = 6;
+kontra.getContext().scale(SCALE, SCALE);
+
+// Load Image Path
+kontra.setImagePath('assets');
 
 
-let player= Sprite({
-    x: 100,        // starting x,y position of the sprite
-    y: 80,
-    color: 'red',  // fill color of the sprite rectangle
-    width: 20,     // width and height of the sprite rectangle
-    height: 40,
-    dx: 2          // move the sprite 2px to the right every frame
-})
+kontra.load(
+    "person_sheet_min.png",
+).then(
+    function () {
+        let spriteSheet = SpriteSheet({
+            image: kontra.imageAssets['person_sheet_min'],
+            frameWidth: 7,
+            frameHeight: 14,
+            animations: {
+                idle: {
+                    frames: 1,
+                    loop: false,
+                },
+                walk: {
+                    frames: [0, 1, 2, 1],
+                    frameRate: 6,
+                }
+            }
+        });
 
-let loop = GameLoop({  // create the main game loop
-    update: function () { // update the game state
-        player.update();
+        let sprite = Sprite({
+            x: 10,
+            y: 10,
+            anchor: {x: 0.5, y: 0.5},
+            animations: spriteSheet.animations
+        })
 
-        // wrap the sprites position when it reaches
-        // the edge of the screen
-        if (player.x > canvas.width) {
-            player.x = -player.width;
-        }
-    },
-    render: function () { // render the game state
-        player.render();
+        let dir = 1;
+        let x_speed = 0.6;
+        let y_speed = 0.4;
+
+        let loop = GameLoop({  // create the main game loop
+            update: function () { // update the game state
+                sprite.update();
+
+                let move = false;
+
+                if (keyPressed('left')) {
+                    if (dir == 1) {
+                        dir = -1;
+                    }
+
+                    sprite.x += dir * x_speed;
+                    move = true;
+                } else if (keyPressed('right')) {
+                    if (dir == -1) {
+                        dir = 1;
+                    }
+
+                    sprite.x += dir * x_speed;
+                    move = true;
+                }
+
+                if (keyPressed('up')) {
+                    sprite.y -= y_speed;
+                    move = true;
+                } else if (keyPressed('down')) {
+                    sprite.y += y_speed;
+                    move = true;
+                }
+
+                if (!move) {
+                    sprite.playAnimation("idle");
+                    sprite.animations["walk"].reset();
+                } else {
+                    sprite.playAnimation("walk");
+                }
+            },
+            render: function () { // render the game state
+                sprite.render();
+            }
+        });
+
+        loop.start();    // start the game
     }
-});
-
-loop.start();    // start the game
+)

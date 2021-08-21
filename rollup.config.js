@@ -7,7 +7,6 @@ import htmlTemplate from 'rollup-plugin-generate-html-template';
 import clear from 'rollup-plugin-clear'
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
-import kontra from 'rollup-plugin-kontra'
 import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 
@@ -20,19 +19,19 @@ export default {
         {file: !production ? "dist/main.js" : "dist/main.min.js", format: 'iife'},
     ],
     plugins: [
-        kontra({
-            gameObject: {
-                // enable only velocity and rotation functionality
-                velocity: true,
-                rotation: true
-            },
-            vector: {
-                // enable vector length functionality
-                length: true
-            },
-            // turn on debugging
-            debug: true
-        }),
+        // kontra({
+        //     gameObject: {
+        //         // enable only velocity and rotation functionality
+        //         velocity: true,
+        //         rotation: true
+        //     },
+        //     vector: {
+        //         // enable vector length functionality
+        //         length: true
+        //     },
+        //     // turn on debugging
+        //     debug: true
+        // }),
         // To import libs from node_modules
         resolve(),
         commonjs(),
