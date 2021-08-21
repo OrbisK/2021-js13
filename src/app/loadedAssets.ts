@@ -1,6 +1,6 @@
 export default [
     {
-        name: "person",
+        name: "player",
         path: "person-sheet.png"
     },
 ]
