@@ -5,13 +5,9 @@ import loadedAssets from "./loadedAssets";
 init();
 initKeys();
 
+kontra.getContext().scale(6, 6);
 
-const SCALE = 6;
-console.log(kontra.getContext())
-kontra.getContext().scale(SCALE, SCALE);
-
-// // Load Image Path
-// kontra.setImagePath('assets');
+kontra.setImagePath('assets');
 
 const assetMapping = loadedAssets.map((a, index) => {
     return {...a, id: +index}
