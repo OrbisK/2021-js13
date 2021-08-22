@@ -1,13 +1,43 @@
 import Entity from "./entity";
+import {TileEngine} from "kontra";
+import {_getAsset} from "../globals";
 
 export default class Scene {
     children: Array<Entity>;
+    tileEngine: TileEngine;
 
     constructor(children: Array<Entity>) {
         this.children = children;
 
-        let img = new Image();
-        img.src = 'assets/tiles.png';
+        this.tileEngine = new TileEngine({
+            // tile size
+            tilewidth: 9,
+            tileheight: 9,
+
+            // map size in tiles
+            width: 20,
+            height: 10,
+
+            // tileset object
+            tilesets: [{
+                firstgid: 1,
+                image: _getAsset("tiles"),
+            }],
+
+            // layer object
+            layers: [{
+                name: 'ground',
+                data: [
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                ],
+            }]
+        });
     }
 
     update() {
@@ -20,6 +50,7 @@ export default class Scene {
     }
 
     render() {
+        this.tileEngine.render();
         for (const child of this.children) {
             child.render();
         }
