@@ -3,6 +3,12 @@ import Player from "./models/player";
 import NPC from "./models/npc";
 import Scene from "./models/scene";
 import {SCALE} from "./globals";
+import ProgressBar from "./progressbar";
+
+
+new ProgressBar(document.querySelectorAll("img"), () => {
+
+})
 
 init();
 initKeys();
