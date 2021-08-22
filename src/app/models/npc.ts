@@ -6,8 +6,8 @@ export default class NPC extends Entity {
 
     constructor(withMask: boolean = true, xSpeed: number = 0.0, ySpeed: number = 0.0, assetId: string = "q") {
         super({assetId});
-        this.x = 20;
-        this.y = 20;
+        this.globalX = 50;
+        this.globalY = 80;
         this.dx = xSpeed;
         this.dy = ySpeed
         this.withMask = withMask;
@@ -27,5 +27,10 @@ export default class NPC extends Entity {
                 }
             }
         }).animations;
+    }
+
+    update() {
+        this.x = this.globalX - this.scene.tileEngine.sx;
+        this.y = this.globalY - this.scene.tileEngine.sy;
     }
 }

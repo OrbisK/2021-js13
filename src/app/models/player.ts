@@ -5,7 +5,8 @@ export default class Player extends Entity {
     xSpeed: number;
     ySpeed: number;
 
-    constructor(xSpeed = 0.6, ySpeed = 0.4, assetId = 'player') {
+
+    constructor(xSpeed = 0.8, ySpeed = 0.6, assetId = 'player') {
         super({assetId});
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
@@ -24,6 +25,9 @@ export default class Player extends Entity {
                 }
             }
         }).animations;
+
+        this.x = 40;
+        this.y = 40;
     }
 
     update() {
@@ -61,7 +65,14 @@ export default class Player extends Entity {
             vy = this.collides(this.x, this.y + vy) ? 0 : vy;
             vx = this.collides(this.x + vx, this.y) ? 0 : vx;
 
-            this.x += vx;
+            if (this.x > this.scene.borderRight && vx > 0) {
+                this.scene.moveSx(vx);
+            } else if (this.x < this.scene.borderLeft && vx < 0) {
+                this.scene.moveSx(vx);
+            } else {
+                this.x += vx;
+            }
+
             this.y += vy;
         }
     }

@@ -31,7 +31,8 @@ export default {
             gameObject: {
                 // enable only velocity and rotation functionality
                 velocity: true,
-                rotation: true
+                group: true,
+                anchor: true,
             },
             vector: {
                 // enable vector length functionality

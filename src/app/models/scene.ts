@@ -3,45 +3,63 @@ import {TileEngine} from "kontra";
 import {_getAsset} from "../globals";
 
 export default class Scene {
-    children: Array<Entity>;
-    tileEngine: TileEngine;
-    width: number;
-    height: number;
-    tileMapWidth: number;
-    tileMapHeight: number;
-    groundTiles: Array<number> | undefined;
+    children: Array<Entity> = [];
+    canvasWidth: number;
+    canvasHeight: number;
+    tileEngine: any;
 
-    constructor(width: number, height: number, children: Array<Entity>) {
-        this.width = width;
-        this.height = height;
-        this.tileMapWidth = Math.ceil(width / 9);
-        this.tileMapHeight = Math.ceil(height / 9);
-        this.children = children;
-        this.groundTiles = this.getGroundTiles();
-        this.tileEngine = this.getTileEngine()
+    worldHeight: number;
+    worldWidth: number = 200;
+
+    borderLeft: number;
+    borderRight: number;
+
+    TILE_SIZE: number = 9;
+    BORDER_SIZE: number = 70;
+
+    constructor(canvasWidth: number, canvasHeight: number) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+
+        this.worldHeight = Math.ceil(canvasHeight / this.TILE_SIZE)
+        this.borderLeft = this.BORDER_SIZE;
+        this.borderRight = canvasWidth - this.BORDER_SIZE;
+
+        this.initTileEngine();
+    }
+
+    addChildren(newChildren: Array<Entity>) {
+        for (let child of newChildren) {
+            child.setScene(this);
+            this.children.push(child);
+        }
     }
 
     getGroundTiles() {
         let groundTiles = [];
 
-        for (let y = 0; y < this.tileMapHeight; y++) {
-            for (let x = 0; x < this.tileMapWidth; x++) {
-                groundTiles.push(1);
+        for (let y = 0; y < this.worldHeight; y++) {
+            for (let x = 0; x < this.worldWidth; x++) {
+                if (y < 2 || y > this.worldHeight - 3) {
+                    groundTiles.push(2);
+                } else {
+                    groundTiles.push(1);
+                }
             }
         }
 
         return groundTiles;
     }
 
-    getTileEngine() {
-        return new TileEngine({
+    initTileEngine() {
+        this.tileEngine = new TileEngine({
             // tile size
             tilewidth: 9,
             tileheight: 9,
 
             // map size in tiles
-            width: this.tileMapWidth,
-            height: this.tileMapHeight,
+            width: this.worldWidth,
+            height: this.worldHeight,
 
             // tileset object
             tilesets: [{
@@ -52,9 +70,13 @@ export default class Scene {
             // layer object
             layers: [{
                 name: 'ground',
-                data: this.groundTiles,
+                data: this.getGroundTiles(),
             }]
         });
+    }
+
+    moveSx(vsx: number) {
+        this.tileEngine.sx += vsx;
     }
 
     update() {
@@ -67,7 +89,6 @@ export default class Scene {
     }
 
     render() {
-        // @ts-ignore
         this.tileEngine.render();
         for (const child of this.children) {
             child.render();
