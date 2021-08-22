@@ -15,10 +15,13 @@ initKeys();
 
 kontra.getContext().scale(SCALE, SCALE);
 
+const c_width = Math.ceil(kontra.getCanvas().width / SCALE);
+const c_height = Math.ceil(kontra.getCanvas().height / SCALE);
+
 let player = new Player();
 let npc = new NPC();
 
-const scene = new Scene([player, npc]);
+const scene = new Scene(c_width, c_height, [player, npc]);
 
 const loop = GameLoop({  // create the main game loop
     update: function () { // update the game state
