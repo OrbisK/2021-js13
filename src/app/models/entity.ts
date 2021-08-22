@@ -1,8 +1,6 @@
 import {Sprite} from "kontra";
+import {_getAsset} from "../globals";
 
-const _getAsset = (name: string): any => {
-    return document.querySelector(`#${name}`)
-}
 
 type EntityType = {
     assetId: string,

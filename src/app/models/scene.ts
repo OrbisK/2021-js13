@@ -2,11 +2,12 @@ import Entity from "./entity";
 
 export default class Scene {
     children: Array<Entity>;
-    offsetX: number = 0;
-    offsetY: number = 0;
 
     constructor(children: Array<Entity>) {
         this.children = children;
+
+        let img = new Image();
+        img.src = 'assets/tiles.png';
     }
 
     update() {

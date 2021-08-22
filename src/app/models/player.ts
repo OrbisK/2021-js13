@@ -58,14 +58,21 @@ export default class Player extends Entity {
         } else {
             this.playAnimation("walk");
 
-            if (vy + this.y < 10 || vy + this.y > 140) {
-                vy = 0;
-            }
-            if (vx + this.x < 4) {
-                vx = 0;
-            }
+            vy = this.collides(this.x, this.y + vy) ? 0 : vy;
+            vx = this.collides(this.x + vx, this.y) ? 0 : vx;
+
             this.x += vx;
             this.y += vy;
         }
+    }
+
+    collides(newX: number, newY: number) {
+        if (newX <= 0) {
+            return true;
+        }
+        if (newY <= 0) {
+            return true;
+        }
+        return false;
     }
 }

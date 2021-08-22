@@ -7,3 +7,6 @@ export default [
     },
 ]
 
+export const _getAsset = (name: string): any => {
+    return document.querySelector(`#${name}`)
+}
