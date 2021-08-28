@@ -1,10 +1,9 @@
 import Entity from "./entity";
-import {keyPressed, SpriteSheet} from "kontra";
+import {getContext, keyPressed, SpriteSheet} from "kontra";
 
 export default class Player extends Entity {
     xSpeed: number;
     ySpeed: number;
-
 
     constructor(xSpeed = 0.8, ySpeed = 0.6, assetId = 'player') {
         super({assetId});
@@ -30,9 +29,28 @@ export default class Player extends Entity {
         this.y = 40;
     }
 
+    render() {
+        super.render();
+        let imageData = getContext().getImageData(0, 0, this.width, this.height);
+        for (var i = 0; i < imageData.data.length; i += 4) {
+            // is this pixel the old rgb?
+            if (imageData.data[i] == 41 &&
+                imageData.data[i + 1] == 41 &&
+                imageData.data[i + 2] == 41
+            ) {
+                // change to your new rgb
+                imageData.data[i] = 50;
+                imageData.data[i + 1] = 100;
+                imageData.data[i + 2] = 200;
+            }
+        }
+        getContext().putImageData(imageData, this.x, this.y);
+    }
+
     update() {
         super.update();
         this.move();
+
     }
 
     move() {

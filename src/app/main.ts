@@ -9,11 +9,10 @@ import NPC from "./models/npc";
 new ProgressBar(document.querySelectorAll("img"), () => {
 
 })
-
 init();
 initKeys();
 
-kontra.getContext().scale(SCALE, SCALE);
+// kontra.getContext().scale(SCALE, SCALE);
 
 const c_width = Math.ceil(kontra.getCanvas().width / SCALE);
 const c_height = Math.ceil(kontra.getCanvas().height / SCALE);
