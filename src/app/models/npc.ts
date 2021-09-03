@@ -2,15 +2,12 @@ import Entity from "./entity";
 import {SpriteSheet} from "kontra";
 
 export default class NPC extends Entity {
-    withMask: boolean
+    constructor(globalX: number, globalY: number, xSpeed: number = 0.0, ySpeed: number = 0.0) {
+        let assetId: string = "q";
+        super({assetId}, globalX, globalY);
 
-    constructor(withMask: boolean = true, xSpeed: number = 0.0, ySpeed: number = 0.0, assetId: string = "q") {
-        super({assetId});
-        this.globalX = 50;
-        this.globalY = 80;
         this.dx = xSpeed;
         this.dy = ySpeed
-        this.withMask = withMask;
 
         this.animations = SpriteSheet({
             image: this.asset,

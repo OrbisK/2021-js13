@@ -1,14 +1,17 @@
 import Entity from "./entity";
-import {getContext, keyPressed, SpriteSheet} from "kontra";
+import {keyPressed, SpriteSheet} from "kontra";
 
 export default class Player extends Entity {
     xSpeed: number;
     ySpeed: number;
 
-    constructor(xSpeed = 0.8, ySpeed = 0.6, assetId = 'player') {
-        super({assetId});
+    constructor(globalX: number, globalY: number, xSpeed = 0.8, ySpeed = 0.6) {
+        let assetId = 'player'
+        super({assetId}, globalX, globalY);
+
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
+
         this.animations = SpriteSheet({
             image: this.asset,
             frameWidth: 7,
@@ -24,33 +27,11 @@ export default class Player extends Entity {
                 }
             }
         }).animations;
-
-        this.x = 40;
-        this.y = 40;
-    }
-
-    render() {
-        super.render();
-        let imageData = getContext().getImageData(0, 0, this.width, this.height);
-        for (var i = 0; i < imageData.data.length; i += 4) {
-            // is this pixel the old rgb?
-            if (imageData.data[i] == 41 &&
-                imageData.data[i + 1] == 41 &&
-                imageData.data[i + 2] == 41
-            ) {
-                // change to your new rgb
-                imageData.data[i] = 50;
-                imageData.data[i + 1] = 100;
-                imageData.data[i + 2] = 200;
-            }
-        }
-        getContext().putImageData(imageData, this.x, this.y);
     }
 
     update() {
         super.update();
         this.move();
-
     }
 
     move() {
@@ -59,11 +40,9 @@ export default class Player extends Entity {
 
         if (keyPressed('left')) {
             vx -= this.xSpeed;
-            this.direction = "left";
         }
         if (keyPressed('right')) {
             vx += this.xSpeed;
-            this.direction = "right";
         }
         if (keyPressed('up')) {
             vy -= this.ySpeed;
@@ -80,19 +59,23 @@ export default class Player extends Entity {
         } else {
             this.playAnimation("walk");
 
-            vy = this.collides(this.x, this.y + vy) ? 0 : vy;
-            vx = this.collides(this.x + vx, this.y) ? 0 : vx;
+            vy = this.collides(this.globalX, this.y + vy) ? 0 : vy;
+            vx = this.collides(this.globalY + vx, this.y) ? 0 : vx;
 
-            if (this.x > this.scene.borderRight && vx > 0) {
-                this.scene.moveSx(vx);
-            } else if (this.x < this.scene.borderLeft && vx < 0) {
-                this.scene.moveSx(vx);
-            } else {
-                this.x += vx;
+            if (this.globalX + vx < 10) {
+                vx = 0;
+            }
+            if (this.globalX + vx > this.scene.levelWidth - 10) {
+                vx = 0;
             }
 
-            this.y += vy;
+            this.globalX += vx;
+            this.globalY += vy;
         }
+
+        this.x = this.globalX - this.scene.tileEngine.sx;
+        this.y = this.globalY - this.scene.tileEngine.sy;
+
     }
 
     collides(newX: number, newY: number) {

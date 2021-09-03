@@ -12,24 +12,25 @@ new ProgressBar(document.querySelectorAll("img"), () => {
 init();
 initKeys();
 
-// kontra.getContext().scale(SCALE, SCALE);
+kontra.getContext().scale(SCALE, SCALE);
 
-const c_width = Math.ceil(kontra.getCanvas().width / SCALE);
-const c_height = Math.ceil(kontra.getCanvas().height / SCALE);
+let player = new Player(70, 30);
+const level = new Scene(100, player);
 
-const scene = new Scene(c_width, c_height);
-scene.addChildren([
-    new Player(),
-    new NPC(),
+level.addChildren([
+    player,
+    new NPC(30, 50),
 ])
 
 const loop = GameLoop({  // create the main game loop
     update: function () { // update the game state
-        scene.update();
+        level.update();
     },
     render: function () { // render the game state
-        scene.render();
+        level.render();
     }
 });
 
 loop.start();    // start the game
+
+
