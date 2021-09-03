@@ -68,6 +68,12 @@ export default class Player extends Entity {
             if (this.globalX + vx > this.scene.levelWidth - 10) {
                 vx = 0;
             }
+            if (this.globalY + vy < 14) {
+                vy = 0;
+            }
+            if (this.globalY + vy > this.scene.levelHeight - 4) {
+                vy = 0;
+            }
 
             this.globalX += vx;
             this.globalY += vy;

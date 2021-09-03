@@ -10,6 +10,7 @@ export default class Scene {
     levelTileHeight: number;
     levelTileWidth: number;
     levelWidth: number;
+    levelHeight: number;
 
     borderLeft: number;
     borderRight: number;
@@ -23,6 +24,7 @@ export default class Scene {
         this.focusPoint = focusPoint;
 
         this.levelTileHeight = Math.ceil(CANVAS_HEIGHT / this.TILE_SIZE)
+        this.levelHeight = this.levelTileHeight * this.TILE_SIZE;
 
         this.borderLeft = this.BORDER_SIZE;
         this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE;
@@ -79,6 +81,22 @@ export default class Scene {
     }
 
     focus() {
+        /* Focus is based on the Game borders
+        *
+        |-------------------------------------|
+        |     |                         |     |
+        |     |                         |     |
+        |     |     p                   |     |
+        |     |                         |     |
+        |-------------------------------------|
+        | rb  ^                         ^ lb  |
+        *   
+        * rb = right border, lb = left border, p = player
+        * The camera follows the player in the inner range.
+        * If the player collides with an inner border, the camera moves.
+        * Once the end of the level is reacherd, the player can also enter the border areas
+        */
+
         let vsx_left = this.globalBorderLeft() - this.focusPoint.globalX;
         let vsx_right = this.focusPoint.globalX - this.globalBorderRight();
 
@@ -89,10 +107,6 @@ export default class Scene {
         }
     }
 
-    moveSx(vsx: number) {
-        this.tileEngine.sx += vsx;
-    }
-
     globalBorderRight() {
         return Math.min(this.tileEngine.sx + this.borderRight, this.levelWidth);
     }
@@ -100,7 +114,6 @@ export default class Scene {
     globalBorderLeft() {
         return this.borderLeft + this.tileEngine.sx;
     }
-
 
     update() {
         // Sprites must be sorted to make sure, which Entity is in the background and which in the foreground
@@ -110,6 +123,7 @@ export default class Scene {
             child.update();
         }
 
+        // Refocus player if moved
         this.focus()
     }
 
