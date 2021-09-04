@@ -1,6 +1,7 @@
 import Entity from "./entity";
-import {TileEngine} from "kontra";
+import {randInt, seedRand, TileEngine} from "kontra";
 import {_getAsset, CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
+import NPC from "./npc";
 
 export default class Level {
     children: Array<Entity> = [];
@@ -16,7 +17,9 @@ export default class Level {
     borderRight: number;
 
     TILE_SIZE: number = 9;
-    BORDER_SIZE: number = 70;
+    BORDER_SIZE: number = 100;
+
+    rand = seedRand('kontra');
 
     constructor(levelTileWidth: number, focusPoint: Entity) {
         this.levelTileWidth = levelTileWidth;
@@ -37,6 +40,22 @@ export default class Level {
         for (let child of newChildren) {
             child.setScene(this);
             this.children.push(child);
+        }
+    }
+
+    addRandomRunningNPCs(num: number) {
+        for (let i = 0; i < num; i++) {
+            let randYPos = randInt(10, this.levelHeight - 10);
+
+            let left = randInt(0, this.levelWidth) <= this.focusPoint.globalX;
+            let dir = randInt(0, 1) > 0 ? 1 : -1;
+            if (left) {
+                let randXPos = randInt(-50, this.tileEngine.sx);
+                this.addChildren([new NPC(randXPos, randYPos, dir * Math.max(0.3, this.rand()))])
+            } else {
+                let randXPos = randInt(CANVAS_WIDTH + this.tileEngine.sx, this.levelWidth);
+                this.addChildren([new NPC(randXPos, randYPos, dir * Math.max(0.3, this.rand()))])
+            }
         }
     }
 

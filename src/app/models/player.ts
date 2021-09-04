@@ -9,8 +9,8 @@ export default class Player extends Entity {
         let assetId = 'player'
         super({assetId}, globalX, globalY);
 
-        this.xSpeed = 0.8;
-        this.ySpeed = 0.6;
+        this.xSpeed = 0.9;
+        this.ySpeed = 0.7;
 
         this.animations = SpriteSheet({
             image: this.asset,

@@ -43,5 +43,11 @@ export default class NPC extends Entity {
 
         this.x = this.globalX - this.scene.tileEngine.sx;
         this.y = this.globalY - this.scene.tileEngine.sy;
+
+        if (this.globalX < -10 && this.dx < 0) {
+            this.globalX = this.scene.levelWidth + 10;
+        } else if (this.globalX > this.scene.levelWidth + 10 && this.dx > 0) {
+            this.globalX = -10;
+        }
     }
 }
