@@ -1,6 +1,6 @@
 import {Sprite} from "kontra";
 import {_getAsset, EntityType} from "../globals";
-import Scene from "./scene";
+import Level from "./level";
 
 export default class Entity extends Sprite.class {
     asset: any;
@@ -16,7 +16,7 @@ export default class Entity extends Sprite.class {
         this.globalY = globalY;
     }
 
-    setScene(scene: Scene) {
+    setScene(scene: Level) {
         this.scene = scene;
     }
 }

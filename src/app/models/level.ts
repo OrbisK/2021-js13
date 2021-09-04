@@ -2,7 +2,7 @@ import Entity from "./entity";
 import {TileEngine} from "kontra";
 import {_getAsset, CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
-export default class Scene {
+export default class Level {
     children: Array<Entity> = [];
     tileEngine: any;
     focusPoint: Entity;

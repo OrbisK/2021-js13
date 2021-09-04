@@ -5,12 +5,12 @@ export default class Player extends Entity {
     xSpeed: number;
     ySpeed: number;
 
-    constructor(globalX: number, globalY: number, xSpeed = 0.8, ySpeed = 0.6) {
+    constructor(globalX: number, globalY: number) {
         let assetId = 'player'
         super({assetId}, globalX, globalY);
 
-        this.xSpeed = xSpeed;
-        this.ySpeed = ySpeed;
+        this.xSpeed = 0.8;
+        this.ySpeed = 0.6;
 
         this.animations = SpriteSheet({
             image: this.asset,
@@ -62,16 +62,10 @@ export default class Player extends Entity {
             vy = this.collides(this.globalX, this.y + vy) ? 0 : vy;
             vx = this.collides(this.globalY + vx, this.y) ? 0 : vx;
 
-            if (this.globalX + vx < 10) {
+            if (this.globalX + vx < 10 || this.globalX + vx > this.scene.levelWidth - 10) {
                 vx = 0;
             }
-            if (this.globalX + vx > this.scene.levelWidth - 10) {
-                vx = 0;
-            }
-            if (this.globalY + vy < 14) {
-                vy = 0;
-            }
-            if (this.globalY + vy > this.scene.levelHeight - 4) {
+            if (this.globalY + vy < 14 || this.globalY + vy > this.scene.levelHeight - 4) {
                 vy = 0;
             }
 
