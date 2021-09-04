@@ -27,6 +27,20 @@ export default class NPC extends Entity {
     }
 
     update() {
+        super.update();
+        this.move();
+    }
+
+    move() {
+        if (this.dx == 0 && this.dy == 0) {
+            this.playAnimation("idle");
+        } else {
+            this.playAnimation("walk");
+        }
+
+        this.globalX += this.dx;
+        this.globalY += this.dy;
+
         this.x = this.globalX - this.scene.tileEngine.sx;
         this.y = this.globalY - this.scene.tileEngine.sy;
     }

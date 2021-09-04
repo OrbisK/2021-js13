@@ -17,7 +17,7 @@ const level = new Level(80, player);
 
 level.addChildren([
     player,
-    new NPC(30, 50),
+    new NPC(30, 50, 0.6),
 ])
 
 const loop = GameLoop({  // create the main game loop
