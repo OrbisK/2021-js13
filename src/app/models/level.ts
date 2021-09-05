@@ -45,7 +45,7 @@ export default class Level {
 
     addRandomRunningNPCs(num: number) {
         for (let i = 0; i < num; i++) {
-            let randYPos = randInt(10, this.levelHeight - 10);
+            let randYPos = randInt(10, this.levelHeight - 5);
 
             let left = randInt(0, this.levelWidth) <= this.focusPoint.globalX;
             let dir = randInt(0, 1) > 0 ? 1 : -1;
@@ -56,6 +56,14 @@ export default class Level {
                 let randXPos = randInt(CANVAS_WIDTH + this.tileEngine.sx, this.levelWidth);
                 this.addChildren([new NPC(randXPos, randYPos, dir * Math.max(0.3, this.rand()))])
             }
+        }
+    }
+
+    addRandomStandingNPCs(num: number) {
+        for (let i = 0; i < num; i++) {
+            let randYPos = randInt(10, this.levelHeight - 5);
+            let randXPos = randInt(this.focusPoint.globalX + 20, this.levelWidth)
+            this.addChildren([new NPC(randXPos, randYPos)])
         }
     }
 

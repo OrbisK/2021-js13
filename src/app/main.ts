@@ -17,6 +17,7 @@ const level = new Level(80, player);
 level.addChildren([player])
 
 level.addRandomRunningNPCs(30);
+level.addRandomStandingNPCs(10);
 
 const loop = GameLoop({  // create the main game loop
     update: function () { // update the game state
