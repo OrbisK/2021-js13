@@ -1,5 +1,5 @@
 import kontra, {GameLoop, initKeys} from 'kontra';
-import Level from "./models/level";
+import World from "./models/world";
 import {SCALE} from "./globals";
 import ProgressBar from "./progressbar";
 import Player from "./models/player";
@@ -12,19 +12,19 @@ initKeys();
 kontra.getContext().scale(SCALE, SCALE);
 
 let player = new Player(70, 30);
-const level = new Level(80, player);
+const world = new World(80, player);
 
-level.addChildren([player])
+world.addChildren([player])
 
-level.addRandomRunningNPCs(30);
-level.addRandomStandingNPCs(10);
+world.addRandomRunningNPCs(30);
+world.addRandomStandingNPCs(10);
 
 const loop = GameLoop({  // create the main game loop
     update: function () { // update the game state
-        level.update();
+        world.update();
     },
     render: function () { // render the game state
-        level.render();
+        world.render();
     }
 });
 

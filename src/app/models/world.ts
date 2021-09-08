@@ -3,7 +3,7 @@ import {randInt, seedRand, TileEngine} from "kontra";
 import {_getAsset, CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import NPC from "./npc";
 
-export default class Level {
+export default class World {
     children: Array<Entity> = [];
     tileEngine: any;
     focusPoint: Entity;
