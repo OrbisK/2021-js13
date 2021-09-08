@@ -51,17 +51,17 @@ export default class Player extends Entity {
             vy += this.ySpeed;
         }
 
+        let diagonalFactor: number = vy != 0 && vx != 0 ? 0.8 : 1.0;
         let move = vx != 0 || vy != 0;
+
+        vx *= diagonalFactor;
+        vy *= diagonalFactor;
 
         if (!move) {
             this.playAnimation("idle");
             this.animations["walk"].reset();
         } else {
             this.playAnimation("walk");
-
-            vy = this.collides(this.globalX, this.y + vy) ? 0 : vy;
-            vx = this.collides(this.globalY + vx, this.y) ? 0 : vx;
-
             if (this.globalX + vx < 10 || this.globalX + vx > this.scene.levelWidth - 10) {
                 vx = 0;
             }
@@ -75,16 +75,5 @@ export default class Player extends Entity {
 
         this.x = this.globalX - this.scene.tileEngine.sx;
         this.y = this.globalY - this.scene.tileEngine.sy;
-
-    }
-
-    collides(newX: number, newY: number) {
-        if (newX <= 0) {
-            return true;
-        }
-        if (newY <= 0) {
-            return true;
-        }
-        return false;
     }
 }
