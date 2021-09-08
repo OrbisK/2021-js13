@@ -1,33 +1,37 @@
-import kontra, {GameLoop, initKeys} from 'kontra';
-import World from "./models/world";
+import kontra, {GameLoop, imageAssets, initKeys, load, setImagePath} from 'kontra';
 import {SCALE} from "./globals";
-import ProgressBar from "./progressbar";
 import Player from "./models/player";
-
-new ProgressBar(document.querySelectorAll("img"), () => {
-
-})
+import World from "./models/world";
+import Entity from "./models/entity";
 
 initKeys();
 kontra.getContext().scale(SCALE, SCALE);
 
-let player = new Player(70, 30);
-const world = new World(80, player);
+// world.addRandomRunningNPCs(30);
+// world.addRandomStandingNPCs(10);
 
-world.addChildren([player])
+setImagePath('assets');
+load(
+    'chars.png',
+    'tiles.png',
+).then(function () {
+    Entity.charSheet = imageAssets['chars']
 
-world.addRandomRunningNPCs(30);
-world.addRandomStandingNPCs(10);
+    let player = new Player();
+    let world = new World(player, imageAssets['tiles']);
+    world.addChild(player)
+    world.addWalkingNPC(1);
 
-const loop = GameLoop({  // create the main game loop
-    update: function () { // update the game state
-        world.update();
-    },
-    render: function () { // render the game state
-        world.render();
-    }
+    const loop = GameLoop({  // create the main game loop
+        update: function () { // update the game state
+            world.update();
+        },
+        render: function () { // render the game state
+            world.render();
+        }
+    });
+
+    loop.start()
 });
-
-loop.start();    // start the game
 
 

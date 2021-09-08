@@ -1,6 +1,6 @@
 import Entity from "./entity";
 import {randInt, seedRand, TileEngine} from "kontra";
-import {_getAsset, CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
+import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import NPC from "./npc";
 
 export default class World {
@@ -8,71 +8,64 @@ export default class World {
     tileEngine: any;
     focusPoint: Entity;
 
-    levelTileHeight: number;
-    levelTileWidth: number;
-    levelWidth: number;
-    levelHeight: number;
-
-    borderLeft: number;
+    heightInTiles: number;
+    widthInTiles: number = 5000;
+    heightInPixels: number;
     borderRight: number;
+    genTick: number = 10;
+    timer: number = 0;
 
     TILE_SIZE: number = 9;
     BORDER_SIZE: number = 100;
 
     rand = seedRand('kontra');
 
-    constructor(levelTileWidth: number, focusPoint: Entity) {
-        this.levelTileWidth = levelTileWidth;
-        this.levelWidth = levelTileWidth * this.TILE_SIZE;
+    constructor(focusPoint: Entity, tileAsset: any) {
         this.focusPoint = focusPoint;
 
-        this.levelTileHeight = Math.ceil(CANVAS_HEIGHT / this.TILE_SIZE)
-        this.levelHeight = this.levelTileHeight * this.TILE_SIZE;
-
-        this.borderLeft = this.BORDER_SIZE;
+        this.heightInTiles = Math.ceil(CANVAS_HEIGHT / this.TILE_SIZE)
+        this.heightInPixels = this.heightInTiles * this.TILE_SIZE;
         this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE;
 
-        this.initTileEngine();
+        this.initTileEngine(tileAsset);
         this.focus();
     }
 
-    addChildren(newChildren: Array<Entity>) {
-        for (let child of newChildren) {
-            child.setScene(this);
-            this.children.push(child);
-        }
+    addChild(child: Entity) {
+        child.setWorld(this);
+        this.children.push(child);
     }
 
-    addRandomRunningNPCs(num: number) {
-        for (let i = 0; i < num; i++) {
-            let randYPos = randInt(10, this.levelHeight - 5);
+    initTileEngine(tileAsset: any) {
+        this.tileEngine = TileEngine({
+            // tile size
+            tilewidth: 9,
+            tileheight: 9,
 
-            let left = randInt(0, this.levelWidth) <= this.focusPoint.globalX;
-            let dir = randInt(0, 1) > 0 ? 1 : -1;
-            if (left) {
-                let randXPos = randInt(-50, this.tileEngine.sx);
-                this.addChildren([new NPC(randXPos, randYPos, dir * Math.max(0.3, this.rand()))])
-            } else {
-                let randXPos = randInt(CANVAS_WIDTH + this.tileEngine.sx, this.levelWidth);
-                this.addChildren([new NPC(randXPos, randYPos, dir * Math.max(0.3, this.rand()))])
-            }
-        }
-    }
+            // map size in tiles
+            width: this.widthInTiles,
+            height: this.heightInTiles,
 
-    addRandomStandingNPCs(num: number) {
-        for (let i = 0; i < num; i++) {
-            let randYPos = randInt(10, this.levelHeight - 5);
-            let randXPos = randInt(this.focusPoint.globalX + 20, this.levelWidth)
-            this.addChildren([new NPC(randXPos, randYPos)])
-        }
+            // tileset object
+            tilesets: [{
+                firstgid: 1,
+                image: tileAsset,
+            }],
+
+            // layer object
+            layers: [{
+                name: 'ground',
+                data: this.getGroundTiles(),
+            }]
+        });
     }
 
     getGroundTiles() {
         let groundTiles = [];
 
-        for (let y = 0; y < this.levelTileHeight; y++) {
-            for (let x = 0; x < this.levelTileWidth; x++) {
-                if (y < 2 || y > this.levelTileHeight - 3) {
+        for (let y = 0; y < this.heightInTiles; y++) {
+            for (let x = 0; x < this.widthInTiles; x++) {
+                if (y < 2 || y > this.heightInTiles - 3) {
                     groundTiles.push(2);
                 } else {
                     groundTiles.push(1);
@@ -83,29 +76,17 @@ export default class World {
         return groundTiles;
     }
 
-    initTileEngine() {
-        this.tileEngine = new TileEngine({
-            // tile size
-            tilewidth: 9,
-            tileheight: 9,
+    addWalkingNPC(npcType: number = 0) {
+        let dir = randInt(0, 1) * 2 - 1;
 
-            // map size in tiles
-            width: this.levelTileWidth,
-            height: this.levelTileHeight,
+        let yPos = randInt(10, this.heightInPixels - 5);
 
-            // tileset object
-            tilesets: [{
-                firstgid: 1,
-                image: _getAsset("tiles"),
-            }],
+        let right = this.tileEngine.sx + CANVAS_WIDTH;
+        let xPos = dir > 0 ? randInt(-50, this.tileEngine.sx - 10) : randInt(right + 10, right + 50)
 
-            // layer object
-            layers: [{
-                name: 'ground',
-                data: this.getGroundTiles(),
-            }]
-        });
+        this.addChild(new NPC(xPos, yPos, npcType, dir * Math.max(0.3, this.rand())))
     }
+
 
     focus() {
         /* Focus is based on the Game borders
@@ -124,26 +105,38 @@ export default class World {
         * Once the end of the level is reacherd, the player can also enter the border areas
         */
 
-        let vsx_left = this.globalBorderLeft() - this.focusPoint.globalX;
         let vsx_right = this.focusPoint.globalX - this.globalBorderRight();
 
-        if (vsx_left > 0 && this.tileEngine.sx - vsx_left >= 0) {
-            this.tileEngine._sx -= vsx_left;
-        } else if (vsx_right > 0 && this.focusPoint.globalX < this.levelWidth - this.BORDER_SIZE) {
+        if (vsx_right > 0 && this.focusPoint.globalX < 20000 - this.BORDER_SIZE) {
             this.tileEngine._sx += vsx_right;
         }
     }
 
     globalBorderRight() {
-        return Math.min(this.tileEngine.sx + this.borderRight, this.levelWidth);
+        return Math.min(this.tileEngine.sx + this.borderRight, 20000);
     }
 
-    globalBorderLeft() {
-        return this.borderLeft + this.tileEngine.sx;
+    clearChildren() {
+        let children: Entity[] = [];
+
+        for (let child of this.children) {
+            if (!child.delete) {
+                children.push(child);
+            }
+        }
+
+        this.children = children;
     }
 
     update() {
+        this.timer += 1;
+
+        if (this.timer % this.genTick == 0) {
+            this.addWalkingNPC(randInt(0, 1));
+        }
+
         // Sprites must be sorted to make sure, which Entity is in the background and which in the foreground
+        this.clearChildren();
         this.children.sort((a: Entity, b: Entity) => a.y < b.y ? -1 : 1);
 
         for (const child of this.children) {

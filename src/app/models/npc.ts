@@ -1,32 +1,20 @@
 import Entity from "./entity";
-import {SpriteSheet} from "kontra";
+import {CANVAS_WIDTH} from "../globals";
 
 export default class NPC extends Entity {
-    constructor(globalX: number, globalY: number, xSpeed: number = 0.0, ySpeed: number = 0.0) {
-        let assetId: string = "q";
-        super({assetId}, globalX, globalY);
+    constructor(globalX: number, globalY: number, npcType: number = 0, xSpeed: number = 0.0, ySpeed: number = 0.0) {
+        super(globalX, globalY);
 
         this.dx = xSpeed;
-        this.dy = ySpeed
+        this.dy = ySpeed;
+        this.npcType = npcType;
+        this.lifetime = 60 * 20;
 
-        this.animations = SpriteSheet({
-            image: this.asset,
-            frameWidth: 7,
-            frameHeight: 14,
-            animations: {
-                idle: {
-                    frames: 1,
-                    loop: false,
-                },
-                walk: {
-                    frames: [0, 1, 2, 1],
-                    frameRate: 6,
-                }
-            }
-        }).animations;
+        this.animations = this.getCharAnimation(npcType == 0 ? [6, 7, 8, 7] : [3, 4, 5, 4]);
     }
 
     update() {
+        this.lifetime -= 1;
         super.update();
         this.move();
     }
@@ -44,10 +32,6 @@ export default class NPC extends Entity {
         this.x = this.globalX - this.scene.tileEngine.sx;
         this.y = this.globalY - this.scene.tileEngine.sy;
 
-        if (this.globalX < -10 && this.dx < 0) {
-            this.globalX = this.scene.levelWidth + 10;
-        } else if (this.globalX > this.scene.levelWidth + 10 && this.dx > 0) {
-            this.globalX = -10;
-        }
+        this.delete = this.lifetime <= 0 && (this.x < 10 || this.x > CANVAS_WIDTH + 10);
     }
 }

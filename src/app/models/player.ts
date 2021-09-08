@@ -1,32 +1,13 @@
 import Entity from "./entity";
-import {keyPressed, SpriteSheet} from "kontra";
+import {keyPressed} from "kontra";
 
 export default class Player extends Entity {
-    xSpeed: number;
-    ySpeed: number;
+    xSpeed: number = 0.9;
+    ySpeed: number = 0.7;
 
-    constructor(globalX: number, globalY: number) {
-        let assetId = 'player'
-        super({assetId}, globalX, globalY);
-
-        this.xSpeed = 0.9;
-        this.ySpeed = 0.7;
-
-        this.animations = SpriteSheet({
-            image: this.asset,
-            frameWidth: 7,
-            frameHeight: 14,
-            animations: {
-                idle: {
-                    frames: 1,
-                    loop: false,
-                },
-                walk: {
-                    frames: [0, 1, 2, 1],
-                    frameRate: 6,
-                }
-            }
-        }).animations;
+    constructor() {
+        super(50, 50);
+        this.animations = this.getCharAnimation([0, 1, 2, 1])
     }
 
     update() {
@@ -62,10 +43,10 @@ export default class Player extends Entity {
             this.animations["walk"].reset();
         } else {
             this.playAnimation("walk");
-            if (this.globalX + vx < 10 || this.globalX + vx > this.scene.levelWidth - 10) {
+            if (this.globalX - this.scene.tileEngine.sx + vx < 10) {
                 vx = 0;
             }
-            if (this.globalY + vy < 14 || this.globalY + vy > this.scene.levelHeight - 4) {
+            if (this.globalY + vy < 14 || this.globalY + vy > this.scene.heightInPixels - 4) {
                 vy = 0;
             }
 
