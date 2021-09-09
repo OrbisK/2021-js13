@@ -209,8 +209,6 @@ export default class World {
             child.update();
         }
 
-        console.log(this.children.length);
-
         // Refocus player if moved
         this.focus()
     }
