@@ -1,5 +1,5 @@
 import Entity from "./entity";
-import {CANVAS_WIDTH} from "../globals";
+import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
 export default class NPC extends Entity {
     constructor(globalX: number, globalY: number, npcType: number = 0, xSpeed: number = 0.0, ySpeed: number = 0.0) {
@@ -8,9 +8,9 @@ export default class NPC extends Entity {
         this.dx = xSpeed;
         this.dy = ySpeed;
         this.npcType = npcType;
-        this.lifetime = 60 * 20;
+        this.lifetime = 60 * 3;
 
-        this.animations = this.getCharAnimation(npcType == 0 ? [6, 7, 8, 7] : [3, 4, 5, 4]);
+        this.animations = this.getCharAnimation(npcType);
     }
 
     update() {
@@ -32,6 +32,7 @@ export default class NPC extends Entity {
         this.x = this.globalX - this.scene.tileEngine.sx;
         this.y = this.globalY - this.scene.tileEngine.sy;
 
-        this.delete = this.lifetime <= 0 && (this.x < 10 || this.x > CANVAS_WIDTH + 10);
+        this.delete = (this.dx <= 0 && this.x < -7) || (this.y < -10 && this.dy < 0) || (this.y > CANVAS_HEIGHT + 5 && this.dy > 0) || (
+            this.lifetime <= 0 && (this.x > CANVAS_WIDTH + 5 || this.x < 0));
     }
 }

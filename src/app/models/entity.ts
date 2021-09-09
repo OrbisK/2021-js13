@@ -19,18 +19,19 @@ export default class Entity extends Sprite.class {
         this.scene = world;
     }
 
-    getCharAnimation(movement: number[]) {
+    getCharAnimation(type: number) {
+        let t = 3 * type;
         return SpriteSheet({
             image: Entity.charSheet,
             frameWidth: 7,
             frameHeight: 12,
             animations: {
                 idle: {
-                    frames: 1,
+                    frames: t + 1,
                     loop: false,
                 },
                 walk: {
-                    frames: movement, // 0, 1, 2, 1
+                    frames: [t, t + 1, t + 2, t + 1],
                     frameRate: 6,
                 }
             }

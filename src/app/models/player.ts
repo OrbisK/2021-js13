@@ -2,12 +2,12 @@ import Entity from "./entity";
 import {keyPressed} from "kontra";
 
 export default class Player extends Entity {
-    xSpeed: number = 0.9;
+    xSpeed: number = 2.0;
     ySpeed: number = 0.7;
 
     constructor() {
         super(50, 50);
-        this.animations = this.getCharAnimation([0, 1, 2, 1])
+        this.animations = this.getCharAnimation(0)
     }
 
     update() {

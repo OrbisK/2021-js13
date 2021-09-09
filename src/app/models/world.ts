@@ -3,11 +3,35 @@ import {randInt, seedRand, TileEngine} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import NPC from "./npc";
 
+let rand = seedRand('kontra');
+
+class Crossroad {
+    start: number;
+    end: number;
+    genTick: number = 50;
+
+    constructor(start: number, end: number) {
+        this.start = start;
+        this.end = end;
+    }
+
+    getWalkingNPC() {
+        let dir = randInt(0, 1) * 2 - 1;
+        let xPos = randInt(this.start * 9 + 5, this.end * 9 - 5);
+        let yPos = dir > 0 ? randInt(-50, -10) : randInt(CANVAS_HEIGHT + 10, CANVAS_HEIGHT + 50);
+        return new NPC(xPos, yPos, randInt(1, 2), 0, dir * Math.max(0.3, rand()))
+    }
+
+    visible(leftBorder: number, rightBorder: number) {
+        return rightBorder > this.start * 9 && leftBorder < this.end * 9;
+    }
+}
+
 export default class World {
     children: Array<Entity> = [];
     tileEngine: any;
     focusPoint: Entity;
-
+    crossroads: Array<Crossroad> = [];
     heightInTiles: number;
     widthInTiles: number = 5000;
     heightInPixels: number;
@@ -18,7 +42,6 @@ export default class World {
     TILE_SIZE: number = 9;
     BORDER_SIZE: number = 100;
 
-    rand = seedRand('kontra');
 
     constructor(focusPoint: Entity, tileAsset: any) {
         this.focusPoint = focusPoint;
@@ -32,8 +55,10 @@ export default class World {
     }
 
     addChild(child: Entity) {
-        child.setWorld(this);
-        this.children.push(child);
+        if (this.children.length < 50) {
+            child.setWorld(this);
+            this.children.push(child);
+        }
     }
 
     initTileEngine(tileAsset: any) {
@@ -60,12 +85,29 @@ export default class World {
         });
     }
 
+    noCrossroadAt(x: number) {
+        for (let cr of this.crossroads) {
+            if (x >= cr.start && x <= cr.end) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     getGroundTiles() {
         let groundTiles = [];
 
+        for (let i = 0; i < Math.floor(this.widthInTiles / 150); i++) {
+            let min = i + 1;
+            let max = 150 * (i + 1) - 1;
+            let width = randInt(5, 15);
+            let start = randInt(min, max - width);
+            this.crossroads.push(new Crossroad(start, start + width));
+        }
+
         for (let y = 0; y < this.heightInTiles; y++) {
             for (let x = 0; x < this.widthInTiles; x++) {
-                if (y < 2 || y > this.heightInTiles - 3) {
+                if ((y < 2 || y > this.heightInTiles - 3) && this.noCrossroadAt(x)) {
                     groundTiles.push(2);
                 } else {
                     groundTiles.push(1);
@@ -76,7 +118,7 @@ export default class World {
         return groundTiles;
     }
 
-    addWalkingNPC(npcType: number = 0) {
+    addWalkingNPC(npcType: number = 1) {
         let dir = randInt(0, 1) * 2 - 1;
 
         let yPos = randInt(10, this.heightInPixels - 5);
@@ -84,7 +126,15 @@ export default class World {
         let right = this.tileEngine.sx + CANVAS_WIDTH;
         let xPos = dir > 0 ? randInt(-50, this.tileEngine.sx - 10) : randInt(right + 10, right + 50)
 
-        this.addChild(new NPC(xPos, yPos, npcType, dir * Math.max(0.3, this.rand())))
+        this.addChild(new NPC(xPos, yPos, npcType, dir * Math.max(0.3, rand())))
+    }
+
+    addStandingNPC(npcType: number = 1) {
+        let yPos = randInt(0, 1) == 0 ? randInt(10, this.heightInPixels / 3) : randInt(this.heightInPixels / 3 * 2, this.heightInPixels - 5);
+        let right = this.tileEngine.sx + CANVAS_WIDTH;
+        let xPos = randInt(right + 10, right + 50)
+
+        this.addChild(new NPC(xPos, yPos, npcType))
     }
 
 
@@ -128,12 +178,28 @@ export default class World {
         this.children = children;
     }
 
-    update() {
+    ticker() {
         this.timer += 1;
 
         if (this.timer % this.genTick == 0) {
-            this.addWalkingNPC(randInt(0, 1));
+            if (randInt(0, 4) < 4) {
+                this.addWalkingNPC(randInt(1, 2))
+            } else {
+                this.addStandingNPC(randInt(1, 2));
+            }
         }
+
+        for (let cr of this.crossroads) {
+            if (cr.visible(this.tileEngine.sx, this.tileEngine.sx + CANVAS_WIDTH + 200)) {
+                if (this.timer % cr.genTick == 0) {
+                    this.addChild(cr.getWalkingNPC())
+                }
+            }
+        }
+    }
+
+    update() {
+        this.ticker()
 
         // Sprites must be sorted to make sure, which Entity is in the background and which in the foreground
         this.clearChildren();
@@ -142,6 +208,8 @@ export default class World {
         for (const child of this.children) {
             child.update();
         }
+
+        console.log(this.children.length);
 
         // Refocus player if moved
         this.focus()
