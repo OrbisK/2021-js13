@@ -15,8 +15,8 @@ export default class NPC extends Entity {
 
     update() {
         this.lifetime -= 1;
-        super.update();
         this.move();
+        super.update();
     }
 
     move() {
