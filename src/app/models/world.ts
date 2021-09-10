@@ -28,40 +28,44 @@ class Crossroad {
 }
 
 export default class World {
-    children: Array<Entity> = [];
+    updateChildren: Array<Entity> = [];
+    renderChildren: Array<Entity> = [];
+
     tileEngine: any;
     focusPoint: Entity;
     crossroads: Array<Crossroad> = [];
     heightInTiles: number;
-    widthInTiles: number = 5000;
+    widthInTiles: number = 1500;
     heightInPixels: number;
     borderRight: number;
     genTick: number = 10;
+    maxChildCount: number = 50;
     timer: number = 0;
 
     TILE_SIZE: number = 9;
     BORDER_SIZE: number = 100;
 
 
-    constructor(focusPoint: Entity, tileAsset: any) {
+    constructor(focusPoint: Entity) {
         this.focusPoint = focusPoint;
+        this.addChild(focusPoint);
 
         this.heightInTiles = Math.ceil(CANVAS_HEIGHT / this.TILE_SIZE)
         this.heightInPixels = this.heightInTiles * this.TILE_SIZE;
         this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE;
 
-        this.initTileEngine(tileAsset);
+        this.initTileEngine();
         this.focus();
     }
 
     addChild(child: Entity) {
-        if (this.children.length < 50) {
+        if (this.updateChildren.length < this.maxChildCount) {
             child.setWorld(this);
-            this.children.push(child);
+            this.updateChildren.push(child);
         }
     }
 
-    initTileEngine(tileAsset: any) {
+    initTileEngine() {
         this.tileEngine = TileEngine({
             // tile size
             tilewidth: 9,
@@ -74,7 +78,7 @@ export default class World {
             // tileset object
             tilesets: [{
                 firstgid: 1,
-                image: tileAsset,
+                image: Entity.tileSheet,
             }],
 
             // layer object
@@ -118,6 +122,14 @@ export default class World {
         return groundTiles;
     }
 
+    addSyringe() {
+        let xPos = randInt(9 * 8, Math.max(9 * 8, this.focusPoint.globalX - 10))
+        let yPos = randInt(10, this.heightInPixels - 5)
+        let syringe = new Entity(xPos, yPos, 1);
+        syringe.setSprite(2);
+        this.addChild(syringe)
+    }
+
     addWalkingNPC(npcType: number = 1) {
         let dir = randInt(0, 1) * 2 - 1;
 
@@ -141,41 +153,36 @@ export default class World {
     focus() {
         /* Focus is based on the Game borders
         *
-        |-------------------------------------|
-        |     |                         |     |
-        |     |                         |     |
-        |     |     p                   |     |
-        |     |                         |     |
-        |-------------------------------------|
-        | rb  ^                         ^ lb  |
+        |------------------------------------|
+        |                              |     |
+        |                              |     |
+        |          p                   |     |
+        |                              |     |
+        |------------------------------------|
+        |                              ^ lb  |
         *   
-        * rb = right border, lb = left border, p = player
+        * lb = left border, p = player
         * The camera follows the player in the inner range.
         * If the player collides with an inner border, the camera moves.
-        * Once the end of the level is reacherd, the player can also enter the border areas
+        * Once the end of the level is reached, the player can also enter the border areas
         */
 
-        let vsx_right = this.focusPoint.globalX - this.globalBorderRight();
-
-        if (vsx_right > 0 && this.focusPoint.globalX < 20000 - this.BORDER_SIZE) {
+        let vsx_right = this.focusPoint.globalX - Math.min(this.tileEngine.sx + this.borderRight, this.widthInTiles * 9);
+        if (vsx_right > 0 && this.focusPoint.globalX < this.widthInTiles * 9 - this.BORDER_SIZE) {
             this.tileEngine._sx += vsx_right;
         }
     }
 
-    globalBorderRight() {
-        return Math.min(this.tileEngine.sx + this.borderRight, 20000);
-    }
+    updateAllChildren() {
+        let newUpdateChildren: Entity[] = []
+        let newRenderChildren: Entity[] = []
 
-    clearChildren() {
-        let children: Entity[] = [];
+        this.updateChildren.forEach(c => !c.delete ? (c.update(), newUpdateChildren.push(c)) : null)
+        newUpdateChildren.sort((a: Entity, b: Entity) => a.y < b.y ? -1 : 1)
+        newUpdateChildren.forEach(c => c.isInScreen() ? newRenderChildren.push(c) : null)
 
-        for (let child of this.children) {
-            if (!child.delete) {
-                children.push(child);
-            }
-        }
-
-        this.children = children;
+        this.updateChildren = newUpdateChildren
+        this.renderChildren = newRenderChildren
     }
 
     ticker() {
@@ -185,8 +192,12 @@ export default class World {
             if (randInt(0, 4) < 4) {
                 this.addWalkingNPC(randInt(1, 2))
             } else {
-                this.addStandingNPC(randInt(1, 2));
+                this.addStandingNPC(randInt(1, 2))
             }
+        }
+
+        if (this.timer % (this.genTick * 100) == 0) {
+            this.addSyringe()
         }
 
         for (let cr of this.crossroads) {
@@ -200,23 +211,12 @@ export default class World {
 
     update() {
         this.ticker()
-
-        // Sprites must be sorted to make sure, which Entity is in the background and which in the foreground
-        this.clearChildren();
-        this.children.sort((a: Entity, b: Entity) => a.y < b.y ? -1 : 1);
-
-        for (const child of this.children) {
-            child.update();
-        }
-
-        // Refocus player if moved
+        this.updateAllChildren();
         this.focus()
     }
 
     render() {
         this.tileEngine.render();
-        for (const child of this.children) {
-            child.render();
-        }
+        this.renderChildren.forEach(c => c.render())
     }
 }

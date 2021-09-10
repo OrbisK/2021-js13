@@ -6,9 +6,3 @@ export let SCALE = 3;
 
 export const CANVAS_WIDTH = Math.ceil(kontra.getCanvas().width / SCALE);
 export const CANVAS_HEIGHT = Math.ceil(kontra.getCanvas().height / SCALE);
-
-export type EntityType = { assetId: string }
-
-export const _getAsset = (name: string): any => {
-    return document.querySelector(`#${name}`)
-}

@@ -7,12 +7,14 @@ export default class Player extends Entity {
 
     constructor() {
         super(50, 50);
-        this.animations = this.getCharAnimation(0)
+        this.setCharAnimation(0)
     }
 
     update() {
-        super.update();
         this.move();
+        super.update();
+        // this.world.updateChildren.forEach(c => collides(this, c) ? console.log("now") : null)
+
     }
 
     move() {
@@ -43,18 +45,15 @@ export default class Player extends Entity {
             this.animations["walk"].reset();
         } else {
             this.playAnimation("walk");
-            if (this.globalX - this.scene.tileEngine.sx + vx < 10) {
+            if (this.globalX - this.world.tileEngine.sx + vx < 10) {
                 vx = 0;
             }
-            if (this.globalY + vy < 14 || this.globalY + vy > this.scene.heightInPixels - 4) {
+            if (this.globalY + vy < 14 || this.globalY + vy > this.world.heightInPixels - 4) {
                 vy = 0;
             }
 
             this.globalX += vx;
             this.globalY += vy;
         }
-
-        this.x = this.globalX - this.scene.tileEngine.sx;
-        this.y = this.globalY - this.scene.tileEngine.sy;
     }
 }

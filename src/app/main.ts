@@ -13,11 +13,9 @@ load(
     'tiles.png',
 ).then(function () {
     Entity.charSheet = imageAssets['chars']
+    Entity.tileSheet = imageAssets['tiles']
 
-    let player = new Player();
-    let world = new World(player, imageAssets['tiles']);
-    world.addChild(player)
-
+    let world = new World(new Player());
     const loop = GameLoop({  // create the main game loop
         update: function () { // update the game state
             world.update();
