@@ -41,6 +41,9 @@ export default {
             sprite: {
                 animation: true
             },
+            text: {
+                newline: true
+            },
             // turn on debugging
             debug: true
         }),

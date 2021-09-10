@@ -4,6 +4,8 @@ import Player from "./models/player";
 import World, {GUI} from "./models/world";
 import Entity from "./models/entity";
 
+
+
 initKeys();
 kontra.getContext().scale(SCALE, SCALE);
 

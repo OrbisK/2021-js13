@@ -1,6 +1,6 @@
 import Entity from "./entity";
-import {randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
+import {keyPressed, randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
+import {CANVAS_HEIGHT, CANVAS_WIDTH, getCookie} from "../globals";
 import NPC from "./npc";
 // @ts-ignore
 import {zzfx} from 'ZzFX';
@@ -34,6 +34,7 @@ export default class World {
 
     static activeWorld: World;
     static worldCount: number = 0;
+    static started: boolean = false;
 
     updateChildren: Array<Entity> = [];
     renderChildren: Array<Entity> = [];
@@ -250,6 +251,9 @@ export default class World {
     }
 
     update() {
+        if (!World.started) {
+            return;
+        }
         this.ticker()
         this.updateAllChildren();
         this.focus()
@@ -265,24 +269,40 @@ export default class World {
 
 export class GUI {
     score: Text;
+    start: Text;
 
     constructor() {
         this.score = Text({
             text: '0m',
             font: '7px Verdana',
             color: 'rgb(250, 250, 250, 0.7)',
-            x: 315,
+            x: 330,
             y: 5,
-            anchor: {x: 0.5, y: 0.5},
-            textAlign: 'left'
+            textAlign: 'right'
+        })
+
+        this.start = Text({
+            text: "Press Enter to start the Game.\nHighscore: " + getCookie("highscore") + "m",
+            font: '8px Verdana',
+            color: 'rgb(250, 250, 250, 0.7)',
+            x: CANVAS_WIDTH / 2,
+            y: CANVAS_HEIGHT / 2,
+            textAlign: 'center',
+            lineHeight: 1.5,
         })
     }
 
     update() {
+        if (keyPressed('enter')) {
+            World.started = true;
+        }
         this.score.text = (World.worldCount * 195 + World.activeWorld.score) + "m"
     }
 
     render() {
+        if (!World.started) {
+            this.start.render();
+        }
         this.score.render()
     }
 
