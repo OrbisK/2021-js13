@@ -2,6 +2,8 @@ import Entity from "./entity";
 import {randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import NPC from "./npc";
+// @ts-ignore
+import {zzfx} from 'ZzFX';
 
 let rand = seedRand('kontra');
 
@@ -90,11 +92,12 @@ export default class World {
         newWorld.focusPoint.globalY = 50;
 
         World.activeWorld = newWorld;
+        zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]); //
     }
 
 
-    addChild(child: Entity) {
-        if (this.updateChildren.length < this.maxChildCount) {
+    addChild(child: Entity, force: boolean = false) {
+        if (force || this.updateChildren.length < this.maxChildCount) {
             child.setWorld(this);
             this.updateChildren.push(child);
         }
@@ -158,11 +161,13 @@ export default class World {
     }
 
     addSyringe() {
-        let xPos = randInt(9 * 8, Math.max(9 * 8, this.focusPoint.globalX - 10))
-        let yPos = randInt(10, this.heightInPixels - 5)
-        let syringe = new Entity(xPos, yPos, 1);
-        syringe.setSprite(2);
-        this.addChild(syringe)
+        let left = this.tileEngine.sx + 50;
+        let xPos = randInt(left, Math.max(left, this.focusPoint.globalX - 10))
+        let yPos = randInt(20, this.heightInPixels - 20)
+        let syringe = new Entity(xPos, yPos, 1)
+        syringe.setSprite(2)
+        this.addChild(syringe, true)
+        zzfx(...[.5, 0, 566, , .06, .26, 1, .15, , , , , , , , , .08, .73, .02, .18])
     }
 
     addWalkingNPC(npcType: number = 1) {

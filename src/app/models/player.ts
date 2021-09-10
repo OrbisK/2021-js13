@@ -1,9 +1,11 @@
 import Entity from "./entity";
 import {keyPressed} from "kontra";
 import World from "./world";
+// @ts-ignore
+import {zzfx} from 'ZzFX';
 
 export default class Player extends Entity {
-    xSpeed: number = 1.1;
+    xSpeed: number = 1.3;
     ySpeed: number = 0.7;
 
     constructor() {
@@ -50,10 +52,11 @@ export default class Player extends Entity {
             this.animations["walk"].reset();
         } else {
             this.playAnimation("walk");
+
             if (this.globalX - this.world.tileEngine.sx + vx < 10) {
                 vx = 0;
             }
-            if (this.globalY + vy < 14 || this.globalY + vy > this.world.heightInPixels - 4) {
+            if (this.globalY + vy < 7 || this.globalY + vy > this.world.heightInPixels - 4) {
                 vy = 0;
             }
 
