@@ -1,5 +1,5 @@
 import Entity from "./entity";
-import {randInt, seedRand, Sprite, TileEngine} from "kontra";
+import {randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import NPC from "./npc";
 
@@ -27,6 +27,7 @@ class Crossroad {
     }
 }
 
+
 export default class World {
 
     static activeWorld: World;
@@ -34,6 +35,7 @@ export default class World {
 
     updateChildren: Array<Entity> = [];
     renderChildren: Array<Entity> = [];
+    score: number = 0;
 
     tileEngine: any;
     focusPoint: Entity;
@@ -246,6 +248,7 @@ export default class World {
         this.ticker()
         this.updateAllChildren();
         this.focus()
+        this.score = Math.max(Math.floor(this.focusPoint.globalX / 9) - 5, this.score)
     }
 
     render() {
@@ -253,4 +256,29 @@ export default class World {
         this.bgSprite.render();
         this.renderChildren.forEach(c => c.render())
     }
+}
+
+export class GUI {
+    score: Text;
+
+    constructor() {
+        this.score = Text({
+            text: '0m',
+            font: '7px Verdana',
+            color: 'rgb(250, 250, 250, 0.7)',
+            x: 315,
+            y: 5,
+            anchor: {x: 0.5, y: 0.5},
+            textAlign: 'left'
+        })
+    }
+
+    update() {
+        this.score.text = (World.worldCount * 195 + World.activeWorld.score) + "m"
+    }
+
+    render() {
+        this.score.render()
+    }
+
 }

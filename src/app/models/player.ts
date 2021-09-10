@@ -3,7 +3,7 @@ import {keyPressed} from "kontra";
 import World from "./world";
 
 export default class Player extends Entity {
-    xSpeed: number = 4.1;
+    xSpeed: number = 1.1;
     ySpeed: number = 0.7;
 
     constructor() {
