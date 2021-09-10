@@ -15,14 +15,13 @@ load(
     Entity.charSheet = imageAssets['chars']
     Entity.tileSheet = imageAssets['tiles']
 
-    let world = new World(new Player());
+    World.activeWorld = new World(new Player());
     const loop = GameLoop({  // create the main game loop
         update: function () { // update the game state
-            world.update();
+            World.activeWorld.update();
         },
         render: function () { // render the game state
-
-            world.render();
+            World.activeWorld.render();
         }
     });
 

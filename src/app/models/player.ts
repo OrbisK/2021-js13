@@ -1,8 +1,9 @@
 import Entity from "./entity";
 import {keyPressed} from "kontra";
+import World from "./world";
 
 export default class Player extends Entity {
-    xSpeed: number = 1.1;
+    xSpeed: number = 4.1;
     ySpeed: number = 0.7;
 
     constructor() {
@@ -13,6 +14,10 @@ export default class Player extends Entity {
     update() {
         this.move();
         super.update();
+
+        if (this.globalX > this.world.widthInTiles * 9) {
+            World.newWorld(this.world)
+        }
         // this.world.updateChildren.forEach(c => collides(this, c) ? console.log("now") : null)
 
     }

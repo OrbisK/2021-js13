@@ -1,5 +1,5 @@
 import Entity from "./entity";
-import {randInt, seedRand, TileEngine} from "kontra";
+import {randInt, seedRand, Sprite, TileEngine} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import NPC from "./npc";
 
@@ -28,6 +28,10 @@ class Crossroad {
 }
 
 export default class World {
+
+    static activeWorld: World;
+    static worldCount: number = 0;
+
     updateChildren: Array<Entity> = [];
     renderChildren: Array<Entity> = [];
 
@@ -35,15 +39,25 @@ export default class World {
     focusPoint: Entity;
     crossroads: Array<Crossroad> = [];
     heightInTiles: number;
-    widthInTiles: number = 1500;
+    widthInTiles: number = 200;
     heightInPixels: number;
     borderRight: number;
     genTick: number = 10;
     maxChildCount: number = 50;
     timer: number = 0;
+    bgSprite: Sprite;
 
     TILE_SIZE: number = 9;
     BORDER_SIZE: number = 100;
+
+    colors = [
+        "rgb(255, 0, 0, 0.07)",
+        "rgb(0, 255, 0, 0.07)",
+        "rgb(0, 0, 255, 0.07)",
+        "rgb(0, 255, 255, 0.07)",
+        "rgb(255, 255, 0, 0.07)",
+        "rgb(255, 0, 255, 0.07)",
+    ]
 
 
     constructor(focusPoint: Entity) {
@@ -54,9 +68,28 @@ export default class World {
         this.heightInPixels = this.heightInTiles * this.TILE_SIZE;
         this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE;
 
+        this.bgSprite = Sprite({
+            x: 0,
+            y: 0,
+            height: CANVAS_HEIGHT,
+            width: CANVAS_WIDTH,
+            color: this.colors[World.worldCount % this.colors.length]
+        })
+
         this.initTileEngine();
         this.focus();
     }
+
+    static newWorld(oldWorld: World) {
+        this.worldCount += 1;
+
+        let newWorld = new World(oldWorld.focusPoint);
+        newWorld.focusPoint.globalX = 50;
+        newWorld.focusPoint.globalY = 50;
+
+        World.activeWorld = newWorld;
+    }
+
 
     addChild(child: Entity) {
         if (this.updateChildren.length < this.maxChildCount) {
@@ -101,10 +134,10 @@ export default class World {
     getGroundTiles() {
         let groundTiles = [];
 
-        for (let i = 0; i < Math.floor(this.widthInTiles / 150); i++) {
+        for (let i = 0; i < Math.floor(this.widthInTiles / 100); i++) {
             let min = i + 1;
-            let max = 150 * (i + 1) - 1;
-            let width = randInt(5, 15);
+            let max = 100 * (i + 1) - 1;
+            let width = randInt(5, 12);
             let start = randInt(min, max - width);
             this.crossroads.push(new Crossroad(start, start + width));
         }
@@ -217,6 +250,7 @@ export default class World {
 
     render() {
         this.tileEngine.render();
+        this.bgSprite.render();
         this.renderChildren.forEach(c => c.render())
     }
 }
