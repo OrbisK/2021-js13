@@ -10,11 +10,12 @@ let rand = seedRand('kontra');
 class Crossroad {
     start: number
     end: number
-    genTick: number = 50
+    genTick: number
 
     constructor(start: number, end: number) {
         this.start = start
         this.end = end
+        this.genTick = Math.ceil(60 / (World.worldCount + 1))
     }
 
     getWalkingNPC() {
@@ -47,8 +48,8 @@ export default class World {
     widthInTiles: number = 200;
     heightInPixels: number;
     borderRight: number;
-    genTick: number = 10;
-    maxChildCount: number = 50;
+    genTick: number;
+    maxChildCount: number = 1;
     timer: number = 0;
     bgSprite: Sprite;
 
@@ -66,12 +67,14 @@ export default class World {
 
 
     constructor(focusPoint: Entity) {
-        this.focusPoint = focusPoint;
-        this.addChild(focusPoint);
+        this.focusPoint = focusPoint
+        this.addChild(focusPoint)
 
         this.heightInTiles = Math.ceil(CANVAS_HEIGHT / this.TILE_SIZE)
-        this.heightInPixels = this.heightInTiles * this.TILE_SIZE;
-        this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE;
+        this.heightInPixels = this.heightInTiles * this.TILE_SIZE
+        this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE
+        this.genTick = Math.ceil(30 / (World.worldCount + 1))
+        this.maxChildCount = 60 + World.worldCount * 20
 
         this.bgSprite = Sprite({
             x: 0,
@@ -81,8 +84,8 @@ export default class World {
             color: this.colors[World.worldCount % this.colors.length]
         })
 
-        this.initTileEngine();
-        this.focus();
+        this.initTileEngine()
+        this.focus()
     }
 
     static newWorld(oldWorld: World) {
@@ -172,7 +175,7 @@ export default class World {
         zzfx(...[.5, 0, 566, , .06, .26, 1, .15, , , , , , , , , .08, .73, .02, .18])
     }
 
-    addWalkingNPC(npcType: number = 1) {
+    addWalkingNPC(type: number = 1) {
         let dir = randInt(0, 1) * 2 - 1;
 
         let yPos = randInt(10, this.heightInPixels - 5);
@@ -180,7 +183,7 @@ export default class World {
         let right = this.tileEngine.sx + CANVAS_WIDTH;
         let xPos = dir > 0 ? randInt(-50, this.tileEngine.sx - 10) : randInt(right + 10, right + 50)
 
-        this.addChild(new NPC(xPos, yPos, npcType, dir * Math.max(0.3, rand())))
+        this.addChild(new NPC(xPos, yPos, type, dir * Math.max(0.3, rand())))
     }
 
     addStandingNPC(npcType: number = 1) {
@@ -264,6 +267,8 @@ export default class World {
     render() {
         this.tileEngine.render();
         this.bgSprite.render();
+        this.renderChildren.forEach(c => c.shadowSprite.render())
+        this.renderChildren.forEach(c => c instanceof NPC && c.type > 0 ? c.coronaSprite.render() : null)
         this.renderChildren.forEach(c => c.render())
     }
 }
@@ -277,7 +282,7 @@ export class GUI {
             text: '0m',
             font: '5px Verdana',
             color: 'rgb(250, 250, 250, 0.7)',
-            x: 245,
+            x: 265,
             y: 5,
             textAlign: 'right'
         })
@@ -287,7 +292,7 @@ export class GUI {
             font: '8px Verdana',
             color: 'rgb(250, 250, 250, 0.7)',
             x: CANVAS_WIDTH / 2,
-            y: CANVAS_HEIGHT / 2,
+            y: CANVAS_HEIGHT / 2 - 5,
             textAlign: 'center',
             lineHeight: 1.5,
         })
