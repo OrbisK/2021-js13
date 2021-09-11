@@ -1,18 +1,14 @@
-import {GameObject, Sprite, SpriteSheet} from "kontra";
+import {GameObject, imageAssets, Sprite, SpriteSheet} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
 export default class Entity extends GameObject.class {
     globalX: number;
     globalY: number;
-    lifetime: number = 60 * 4;
+    lifetime: number = 60 * 2;
+    dir: number = 1;
     deleteFlag: boolean = false;
-
     type: number;
-
     world: any;
-
-    static charSheet: any;
-    static tileSheet: any;
 
     constructor(globalX: number, globalY: number, type: number = 0) {
         super({
@@ -48,8 +44,7 @@ export default class Entity extends GameObject.class {
 
     update() {
         super.update()
-        this.lifetime -= 1
-        this.deleteFlag = this.lifetime < 0 && !this.isInScreen()
+        this.deleteFlag = this.lifetime-- < 0 && !this.isInScreen()
 
         this.advance()
         this.x = this.globalX - this.world.tileEngine.sx
@@ -63,7 +58,7 @@ export default class Entity extends GameObject.class {
 
     setAnimationFromCharsSheet(t: number) {
         this.entitySprite.animations = SpriteSheet({
-            image: Entity.charSheet,
+            image: imageAssets['chars'],
             frameWidth: 7,
             frameHeight: 12,
             animations: {
@@ -80,7 +75,7 @@ export default class Entity extends GameObject.class {
 
     setImageFromTileSheet(pos: number) {
         this.entitySprite.animations = SpriteSheet({
-            image: Entity.tileSheet,
+            image: imageAssets['tiles'],
             frameWidth: 9,
             frameHeight: 9,
             animations: {

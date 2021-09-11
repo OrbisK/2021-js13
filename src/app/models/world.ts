@@ -1,5 +1,5 @@
 import Entity from "./entity";
-import {keyPressed, randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
+import {imageAssets, keyPressed, randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH, getCookie} from "../globals";
 import NPC from "./npc";
 // @ts-ignore
@@ -8,24 +8,24 @@ import {zzfx} from 'ZzFX';
 let rand = seedRand('kontra');
 
 class Crossroad {
-    start: number;
-    end: number;
-    genTick: number = 50;
+    start: number
+    end: number
+    genTick: number = 50
 
     constructor(start: number, end: number) {
-        this.start = start;
-        this.end = end;
+        this.start = start
+        this.end = end
     }
 
     getWalkingNPC() {
-        let dir = randInt(0, 1) * 2 - 1;
-        let xPos = randInt(this.start * 9 + 5, this.end * 9 - 5);
-        let yPos = dir > 0 ? randInt(-50, -10) : randInt(CANVAS_HEIGHT + 10, CANVAS_HEIGHT + 50);
-        return new NPC(xPos, yPos, randInt(1, 2), 0, dir * Math.max(0.3, rand()))
+        let ySpeed = (randInt(0, 1) * 2 - 1) * Math.max(0.3, rand())
+        let xPos = randInt(this.start * 9 + 5, this.end * 9 - 5)
+        let yPos = ySpeed > 0 ? randInt(-50, -10) : randInt(CANVAS_HEIGHT + 10, CANVAS_HEIGHT + 50)
+        return new NPC(xPos, yPos, randInt(1, 2), 0, ySpeed)
     }
 
     visible(leftBorder: number, rightBorder: number) {
-        return rightBorder > this.start * 9 && leftBorder < this.end * 9;
+        return rightBorder > this.start * 9 && leftBorder < this.end * 9
     }
 }
 
@@ -88,12 +88,12 @@ export default class World {
     static newWorld(oldWorld: World) {
         this.worldCount += 1;
 
+        zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
         let newWorld = new World(oldWorld.focusPoint);
         newWorld.focusPoint.globalX = 50;
         newWorld.focusPoint.globalY = 50;
 
         World.activeWorld = newWorld;
-        zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]); //
     }
 
 
@@ -118,7 +118,7 @@ export default class World {
             // tileset object
             tilesets: [{
                 firstgid: 1,
-                image: Entity.tileSheet,
+                image: imageAssets['tiles'],
             }],
 
             // layer object
@@ -184,7 +184,7 @@ export default class World {
     }
 
     addStandingNPC(npcType: number = 1) {
-        let yPos = randInt(0, 1) == 0 ? randInt(10, this.heightInPixels / 3) : randInt(this.heightInPixels / 3 * 2, this.heightInPixels - 5);
+        let yPos = randInt(10, this.heightInPixels - 5);
         let right = this.tileEngine.sx + CANVAS_WIDTH;
         let xPos = randInt(right + 10, right + 50)
 
