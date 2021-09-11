@@ -99,7 +99,8 @@ export default class World {
 
     addChild(child: Entity, force: boolean = false) {
         if (force || this.updateChildren.length < this.maxChildCount) {
-            child.setWorld(this);
+            // @ts-ignore
+            child.world = this;
             this.updateChildren.push(child);
         }
     }
@@ -166,7 +167,7 @@ export default class World {
         let xPos = randInt(left, Math.max(left, this.focusPoint.globalX - 10))
         let yPos = randInt(20, this.heightInPixels - 20)
         let syringe = new Entity(xPos, yPos, 1)
-        syringe.setSprite(2)
+        syringe.setImageFromTileSheet(2)
         this.addChild(syringe, true)
         zzfx(...[.5, 0, 566, , .06, .26, 1, .15, , , , , , , , , .08, .73, .02, .18])
     }
@@ -218,7 +219,7 @@ export default class World {
         let newUpdateChildren: Entity[] = []
         let newRenderChildren: Entity[] = []
 
-        this.updateChildren.forEach(c => !c.delete ? (c.update(), newUpdateChildren.push(c)) : null)
+        this.updateChildren.forEach(c => !c.deleteFlag ? (c.update(), newUpdateChildren.push(c)) : null)
         newUpdateChildren.sort((a: Entity, b: Entity) => a.y < b.y ? -1 : 1)
         newUpdateChildren.forEach(c => c.isInScreen() ? newRenderChildren.push(c) : null)
 
@@ -274,9 +275,9 @@ export class GUI {
     constructor() {
         this.score = Text({
             text: '0m',
-            font: '7px Verdana',
+            font: '5px Verdana',
             color: 'rgb(250, 250, 250, 0.7)',
-            x: 330,
+            x: 245,
             y: 5,
             textAlign: 'right'
         })

@@ -33,13 +33,15 @@ export default {
                 velocity: true,
                 group: true,
                 anchor: true,
+                scale: true,
             },
             vector: {
                 // enable vector length functionality
                 length: true
             },
             sprite: {
-                animation: true
+                animation: true,
+                image: true,
             },
             text: {
                 newline: true

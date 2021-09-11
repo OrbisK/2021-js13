@@ -1,56 +1,68 @@
-import {Sprite, SpriteSheet} from "kontra";
-import World from "./world";
+import {GameObject, Sprite, SpriteSheet} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
-export default class Entity extends Sprite.class {
+export default class Entity extends GameObject.class {
     globalX: number;
     globalY: number;
-    delete: boolean = false;
+    lifetime: number = 60 * 4;
+    deleteFlag: boolean = false;
+
     type: number;
 
     world: any;
-    shadow: any;
 
     static charSheet: any;
     static tileSheet: any;
 
     constructor(globalX: number, globalY: number, type: number = 0) {
-        super({anchor: {x: 0.5, y: 0.8}})
-        this.globalX = globalX;
-        this.globalY = globalY;
-        this.type = type;
-
-        this.shadow = Sprite({
-            entity: this,
-
-            render: function () {
-                // @ts-ignore
-                this.context.fillStyle = "rgba(0, 0, 0, 0.7)";
-
-                // @ts-ignore
-                this.context.beginPath();
-                // @ts-ignore
-                this.context.ellipse(0, 0, Math.floor(this.entity.width / 2), 2, 0, 0, 2 * Math.PI);
-                // @ts-ignore
-                this.context.fill();
-            },
+        super({
+            anchor: {x: 0.5, y: 0.8},
+            entitySprite: Sprite({anchor: {x: 0.5, y: 0.8}}),
+            shadowSprite: Sprite({
+                y: 2,
+                render: function () {
+                    // @ts-ignore
+                    this.context.fillStyle = "rgba(0, 0, 0, 0.7)";
+                    // @ts-ignore
+                    this.context.beginPath();
+                    // @ts-ignore
+                    this.context.ellipse(0, 0, Math.floor(3), 2, 0, 0, 2 * Math.PI);
+                    // @ts-ignore
+                    this.context.fill();
+                }
+            }),
             update: function () {
-                this.x = this.entity.x;
-                this.y = this.entity.y + 2;
+                this.shadowSprite.update()
+                this.entitySprite.update()
+            },
+            render: function () {
+                this.shadowSprite.render()
+                this.entitySprite.render()
             }
         })
+
+        this.globalX = globalX
+        this.globalY = globalY
+        this.type = type
     }
+
+    update() {
+        super.update()
+        this.lifetime -= 1
+        this.deleteFlag = this.lifetime < 0 && !this.isInScreen()
+
+        this.advance()
+        this.x = this.globalX - this.world.tileEngine.sx
+        this.y = this.globalY - this.world.tileEngine.sy
+    }
+
 
     isInScreen() {
-        return this.x > -3 && this.y > -5 && this.x < CANVAS_WIDTH + 2 && this.y < CANVAS_HEIGHT + 2;
+        return this.x > -3 && this.y > -5 && this.x < CANVAS_WIDTH + 2 && this.y < CANVAS_HEIGHT + 2
     }
 
-    setWorld(world: World) {
-        this.world = world;
-    }
-
-    setCharAnimation(t: number) {
-        this.animations = SpriteSheet({
+    setAnimationFromCharsSheet(t: number) {
+        this.entitySprite.animations = SpriteSheet({
             image: Entity.charSheet,
             frameWidth: 7,
             frameHeight: 12,
@@ -60,14 +72,14 @@ export default class Entity extends Sprite.class {
                 },
                 walk: {
                     frames: [t * 3, t * 3 + 1, t * 3 + 2, t * 3 + 1],
-                    frameRate: 6,
+                    frameRate: 5,
                 }
             }
-        }).animations;
+        }).animations
     }
 
-    setSprite(pos: number) {
-        this.animations = SpriteSheet({
+    setImageFromTileSheet(pos: number) {
+        this.entitySprite.animations = SpriteSheet({
             image: Entity.tileSheet,
             frameWidth: 9,
             frameHeight: 9,
@@ -76,19 +88,6 @@ export default class Entity extends Sprite.class {
                     frames: pos,
                 },
             }
-        }).animations;
-    }
-
-    render() {
-        this.shadow.render();
-        super.render();
-    }
-
-    update() {
-        super.update();
-
-        this.x = this.globalX - this.world.tileEngine.sx;
-        this.y = this.globalY - this.world.tileEngine.sy;
-        this.shadow.update();
+        }).animations
     }
 }
