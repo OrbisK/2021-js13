@@ -63,8 +63,8 @@ export default class World {
         this.addChild(focusPoint)
 
         this.hiT = CANVAS_HEIGHT / 9
-        this.genTick = ~~(30 / World.worldCount) + 1
-        this.maxChild = 60 + World.worldCount * 20
+        this.genTick = ~~(25 / World.worldCount) + 1
+        this.maxChild = Math.min(100, 40 + World.worldCount * 10)
 
         this.bg = Sprite({
             x: 0,
@@ -222,7 +222,7 @@ export default class World {
         this.timer += 1;
 
         if (this.timer % this.genTick == 0) {
-            if (randInt(0, 4) < 4) {
+            if (randInt(0, 4 + World.worldCount) > 0) {
                 this.wnpc(randInt(1, 2))
             } else {
                 this.snpc(randInt(1, 2))
@@ -235,7 +235,7 @@ export default class World {
 
         for (let cr of this.crs) {
             if (cr.visible(this.tE.sx, this.tE.sx + CANVAS_WIDTH + 200)) {
-                if (this.timer % (~~(60 / World.worldCount) + 1) == 0) {
+                if (this.timer % Math.max(~~(60 / World.worldCount) + 1, 20) == 0) {
                     this.addChild(cr.getWalkingNPC())
                 }
             }
@@ -308,13 +308,15 @@ export class GUI {
     }
 
     update() {
-        if (keyPressed('enter')) World.started = true
+        // @ts-ignore
+        if (keyPressed('enter') && World.a.player.life > 0) World.started = true
         this.score.text = ((World.worldCount - 1) * 195 + World.a.score) + "m"
         this.coronaProb.text = "Corona: " + ~~(100 - World.a.player.life / 10) + "%"
     }
 
     render() {
-        if (!World.started) {
+        // @ts-ignore
+        if (!World.started && World.a.player.life > 0) {
             this.title.render()
             this.start.render()
         }

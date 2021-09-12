@@ -53,7 +53,10 @@ export default class Player extends NPC {
                     child.del = true;
                     this.life = Math.min(1000, this.life + 200);
                 } else {
-                    this.life--;
+                    this.life -= 3;
+                    if (this.life <= 0) {
+                        World.started = false;
+                    }
                 }
             }
         }

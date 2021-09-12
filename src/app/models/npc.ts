@@ -3,7 +3,7 @@ import {randInt} from "kontra";
 
 export default class NPC extends Entity {
     constructor(gX: number, gY: number, npcType: number = 0, dx: number = 0.0, dy: number = 0.0) {
-        super(gX, gY, 10, npcType == 1 ? 11 : 16)
+        super(gX, gY, 10, npcType == 1 ? 14 : 20)
 
         this.dx = dx;
         this.dy = dy;

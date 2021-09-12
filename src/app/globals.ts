@@ -1,5 +1,5 @@
 export const CANVAS_WIDTH = 270;
-export const CANVAS_HEIGHT = 126;
+export const CANVAS_HEIGHT = 99;
 
 export function getCookie(cname: string) {
     let name = cname + "=";
