@@ -5,17 +5,15 @@ import NPC from "./npc";
 // @ts-ignore
 import {zzfx} from 'ZzFX';
 
-let rand = seedRand('kontra');
+let rand = seedRand('x');
 
 class Crossroad {
     start: number
     end: number
-    genTick: number
 
     constructor(start: number, end: number) {
         this.start = start
         this.end = end
-        this.genTick = Math.ceil(60 / (World.worldCount + 1))
     }
 
     getWalkingNPC() {
@@ -34,31 +32,27 @@ class Crossroad {
 export default class World {
 
     static activeWorld: World;
-    static worldCount: number = 0;
+    static worldCount: number = 1;
     static started: boolean = false;
 
-    updateChildren: Array<Entity> = [];
-    renderChildren: Array<Entity> = [];
+    uCh: Array<Entity> = [];
+    rCh: Array<Entity> = [];
     score: number = 0;
 
-    tileEngine: any;
-    focusPoint: Entity;
+    tE: any;
+    player: Entity;
     crossroads: Array<Crossroad> = [];
     heightInTiles: number;
     widthInTiles: number = 200;
-    heightInPixels: number;
     borderRight: number;
     genTick: number;
     maxChildCount: number = 1;
     timer: number = 0;
     bgSprite: Sprite;
 
-    TILE_SIZE: number = 9;
-    BORDER_SIZE: number = 100;
-
     colors = [
-        "rgb(255, 0, 0, 0.07)",
         "rgb(0, 255, 0, 0.07)",
+        "rgb(255, 0, 0, 0.07)",
         "rgb(0, 0, 255, 0.07)",
         "rgb(0, 255, 255, 0.07)",
         "rgb(255, 255, 0, 0.07)",
@@ -67,13 +61,12 @@ export default class World {
 
 
     constructor(focusPoint: Entity) {
-        this.focusPoint = focusPoint
+        this.player = focusPoint
         this.addChild(focusPoint)
 
-        this.heightInTiles = Math.ceil(CANVAS_HEIGHT / this.TILE_SIZE)
-        this.heightInPixels = this.heightInTiles * this.TILE_SIZE
-        this.borderRight = CANVAS_WIDTH - this.BORDER_SIZE
-        this.genTick = Math.ceil(30 / (World.worldCount + 1))
+        this.heightInTiles = CANVAS_HEIGHT / 9
+        this.borderRight = CANVAS_WIDTH - 100
+        this.genTick = ~~(30 / World.worldCount) + 1
         this.maxChildCount = 60 + World.worldCount * 20
 
         this.bgSprite = Sprite({
@@ -90,26 +83,23 @@ export default class World {
 
     static newWorld(oldWorld: World) {
         this.worldCount += 1;
-
         zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
-        let newWorld = new World(oldWorld.focusPoint);
-        newWorld.focusPoint.globalX = 50;
-        newWorld.focusPoint.globalY = 50;
-
-        World.activeWorld = newWorld;
+        World.activeWorld = new World(oldWorld.player);
+        oldWorld.player.gX = 50;
+        oldWorld.player.gY = 50;
     }
 
 
     addChild(child: Entity, force: boolean = false) {
-        if (force || this.updateChildren.length < this.maxChildCount) {
+        if (force || this.uCh.length < this.maxChildCount) {
             // @ts-ignore
             child.world = this;
-            this.updateChildren.push(child);
+            this.uCh.push(child);
         }
     }
 
     initTileEngine() {
-        this.tileEngine = TileEngine({
+        this.tE = TileEngine({
             // tile size
             tilewidth: 9,
             tileheight: 9,
@@ -144,7 +134,7 @@ export default class World {
     getGroundTiles() {
         let groundTiles = [];
 
-        for (let i = 0; i < Math.floor(this.widthInTiles / 100); i++) {
+        for (let i = 0; i < this.widthInTiles / 100; i++) {
             let min = i + 1;
             let max = 100 * (i + 1) - 1;
             let width = randInt(5, 12);
@@ -154,7 +144,7 @@ export default class World {
 
         for (let y = 0; y < this.heightInTiles; y++) {
             for (let x = 0; x < this.widthInTiles; x++) {
-                if ((y < 2 || y > this.heightInTiles - 3) && this.noCrossroadAt(x)) {
+                if ((y < 1 || y > this.heightInTiles - 3) && this.noCrossroadAt(x)) {
                     groundTiles.push(2);
                 } else {
                     groundTiles.push(1);
@@ -166,11 +156,11 @@ export default class World {
     }
 
     addSyringe() {
-        let left = this.tileEngine.sx + 50;
-        let xPos = randInt(left, Math.max(left, this.focusPoint.globalX - 10))
-        let yPos = randInt(20, this.heightInPixels - 20)
+        let left = this.tE.sx + 50
+        let xPos = randInt(left, Math.max(left, this.player.gX - 10))
+        let yPos = randInt(20, CANVAS_HEIGHT - 20)
         let syringe = new Entity(xPos, yPos, 1)
-        syringe.setImageFromTileSheet(2)
+        syringe.setImg(2)
         this.addChild(syringe, true)
         zzfx(...[.5, 0, 566, , .06, .26, 1, .15, , , , , , , , , .08, .73, .02, .18])
     }
@@ -178,17 +168,17 @@ export default class World {
     addWalkingNPC(type: number = 1) {
         let dir = randInt(0, 1) * 2 - 1;
 
-        let yPos = randInt(10, this.heightInPixels - 5);
+        let yPos = randInt(10, CANVAS_HEIGHT - 5);
 
-        let right = this.tileEngine.sx + CANVAS_WIDTH;
-        let xPos = dir > 0 ? randInt(-50, this.tileEngine.sx - 10) : randInt(right + 10, right + 50)
+        let right = this.tE.sx + CANVAS_WIDTH;
+        let xPos = dir > 0 ? randInt(-50, this.tE.sx - 10) : randInt(right + 10, right + 50)
 
         this.addChild(new NPC(xPos, yPos, type, dir * Math.max(0.3, rand())))
     }
 
     addStandingNPC(npcType: number = 1) {
-        let yPos = randInt(10, this.heightInPixels - 5);
-        let right = this.tileEngine.sx + CANVAS_WIDTH;
+        let yPos = randInt(10, CANVAS_HEIGHT - 5);
+        let right = this.tE.sx + CANVAS_WIDTH;
         let xPos = randInt(right + 10, right + 50)
 
         this.addChild(new NPC(xPos, yPos, npcType))
@@ -212,9 +202,9 @@ export default class World {
         * Once the end of the level is reached, the player can also enter the border areas
         */
 
-        let vsx_right = this.focusPoint.globalX - Math.min(this.tileEngine.sx + this.borderRight, this.widthInTiles * 9);
-        if (vsx_right > 0 && this.focusPoint.globalX < this.widthInTiles * 9 - this.BORDER_SIZE) {
-            this.tileEngine._sx += vsx_right;
+        let vsx_right = this.player.gX - Math.min(this.tE.sx + this.borderRight, this.widthInTiles * 9);
+        if (vsx_right > 0 && this.player.gX < this.widthInTiles * 9 - 100) {
+            this.tE._sx += vsx_right;
         }
     }
 
@@ -222,12 +212,12 @@ export default class World {
         let newUpdateChildren: Entity[] = []
         let newRenderChildren: Entity[] = []
 
-        this.updateChildren.forEach(c => !c.deleteFlag ? (c.update(), newUpdateChildren.push(c)) : null)
+        this.uCh.forEach(c => !c.del ? (c.update(), newUpdateChildren.push(c)) : null)
         newUpdateChildren.sort((a: Entity, b: Entity) => a.y < b.y ? -1 : 1)
         newUpdateChildren.forEach(c => c.isInScreen() ? newRenderChildren.push(c) : null)
 
-        this.updateChildren = newUpdateChildren
-        this.renderChildren = newRenderChildren
+        this.uCh = newUpdateChildren
+        this.rCh = newRenderChildren
     }
 
     ticker() {
@@ -246,8 +236,8 @@ export default class World {
         }
 
         for (let cr of this.crossroads) {
-            if (cr.visible(this.tileEngine.sx, this.tileEngine.sx + CANVAS_WIDTH + 200)) {
-                if (this.timer % cr.genTick == 0) {
+            if (cr.visible(this.tE.sx, this.tE.sx + CANVAS_WIDTH + 200)) {
+                if (this.timer % (~~(60 / World.worldCount) + 1) == 0) {
                     this.addChild(cr.getWalkingNPC())
                 }
             }
@@ -255,21 +245,19 @@ export default class World {
     }
 
     update() {
-        if (!World.started) {
-            return;
-        }
+        if (!World.started) return
         this.ticker()
-        this.updateAllChildren();
+        this.updateAllChildren()
         this.focus()
-        this.score = Math.max(Math.floor(this.focusPoint.globalX / 9) - 5, this.score)
+        this.score = Math.max(~~(this.player.gX / 9) - 5, this.score)
     }
 
     render() {
-        this.tileEngine.render();
+        this.tE.render();
         this.bgSprite.render();
-        this.renderChildren.forEach(c => c.shadowSprite.render())
-        this.renderChildren.forEach(c => c instanceof NPC && c.type > 0 ? c.coronaSprite.render() : null)
-        this.renderChildren.forEach(c => c.render())
+        this.rCh.forEach(c => c.sSp.render())
+        this.rCh.forEach(c => c instanceof NPC && c.type > 0 ? c.cSp.render() : null)
+        this.rCh.forEach(c => c.render())
     }
 }
 
@@ -299,16 +287,12 @@ export class GUI {
     }
 
     update() {
-        if (keyPressed('enter')) {
-            World.started = true;
-        }
-        this.score.text = (World.worldCount * 195 + World.activeWorld.score) + "m"
+        if (keyPressed('enter')) World.started = true
+        this.score.text = ((World.worldCount - 1) * 195 + World.activeWorld.score) + "m"
     }
 
     render() {
-        if (!World.started) {
-            this.start.render();
-        }
+        if (!World.started) this.start.render()
         this.score.render()
     }
 

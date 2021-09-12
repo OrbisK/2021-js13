@@ -1,11 +1,11 @@
-import kontra from "kontra";
+import {getCanvas, init} from "kontra";
 
-kontra.init();
+init();
 
 export let SCALE = 4;
 
-export const CANVAS_WIDTH = Math.ceil(kontra.getCanvas().width / SCALE);
-export const CANVAS_HEIGHT = Math.ceil(kontra.getCanvas().height / SCALE);
+export const CANVAS_WIDTH = Math.ceil(getCanvas().width / SCALE);
+export const CANVAS_HEIGHT = Math.ceil(getCanvas().height / SCALE);
 
 export function getCookie(cname: string) {
     let name = cname + "=";

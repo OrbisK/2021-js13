@@ -30,24 +30,17 @@ export default {
         kontra({
             gameObject: {
                 // enable only velocity and rotation functionality
-                velocity: true,
-                group: true,
                 anchor: true,
                 scale: true,
             },
-            vector: {
-                // enable vector length functionality
-                length: true
-            },
             sprite: {
                 animation: true,
-                image: true,
             },
             text: {
                 newline: true
             },
             // turn on debugging
-            debug: true
+            debug: false
         }),
         // To import libs from node_modules
         resolve(),

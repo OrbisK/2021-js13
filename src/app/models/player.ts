@@ -4,6 +4,7 @@ import NPC from "./npc";
 
 // @ts-ignore
 import {zzfx} from 'ZzFX';
+import {CANVAS_HEIGHT} from "../globals";
 
 export default class Player extends NPC {
     constructor() {
@@ -32,26 +33,30 @@ export default class Player extends NPC {
         vy *= diagonalFactor
 
         if (!move) {
-            this.entitySprite.playAnimation("idle")
-            this.entitySprite.animations["walk"].reset()
+            this.play("idle")
+            this.eSp.animations["walk"].reset()
         } else {
-            this.entitySprite.playAnimation("walk")
+            this.play("walk")
 
-            if (this.globalX - this.world.tileEngine.sx + vx < 4) vx = 0
-            if (this.globalY + vy < 7 || this.globalY + vy > this.world.heightInPixels - 4) vy = 0
+            if (this.gX - this.world.tE.sx + vx < 4) vx = 0
+            if (this.gY + vy < 7 || this.gY + vy > CANVAS_HEIGHT - 4) vy = 0
 
-            this.globalX += vx;
-            this.globalY += vy;
+            this.gX += vx;
+            this.gY += vy;
         }
 
-        for (let child of this.world.updateChildren) {
-            if (child.type == 1 && this.dist(child) < 4) {
-                zzfx(...[, 0, 344, .07, .28, .19, , 1.04, .6, , 54, .05, .15, .1, , , , .83, .07]);
-                child.deleteFlag = true;
+        for (let child of this.world.uCh) {
+            if (this.coll(child)) {
+                if (child.type == 1) {
+                    zzfx(...[, 0, 344, .07, .28, .19, , 1.04, .6, , 54, .05, .15, .1, , , , .83, .07]);
+                    child.del = true;
+                } else {
+                    // NPC collision logic
+                }
             }
         }
 
-        if (this.globalX > this.world.widthInTiles * 9) {
+        if (this.gX > this.world.widthInTiles * 9) {
             World.newWorld(this.world)
         }
     }

@@ -1,36 +1,37 @@
 import {GameObject, imageAssets, Sprite, SpriteSheet} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
+let anchor = {x: 0.5, y: 0.8}
 export default class Entity extends GameObject.class {
-    globalX: number
-    globalY: number
-    lifetime: number = 60 * 2
+    gX: number
+    gY: number
+    lifetime: number = 120
     dir: number = 1
-    deleteFlag: boolean = false
+    del: boolean = false
     type: number
     world: any
 
     constructor(globalX: number, globalY: number, type: number = 0, xRadius: number = 4) {
         super({
-            anchor: {x: 0.5, y: 0.8},
-            entitySprite: Sprite({anchor: {x: 0.5, y: 0.8}}),
+            anchor: anchor,
+            eSp: Sprite({anchor: anchor}), // EntitySprite -> main sprite
 
             update: function () {
-                this.entitySprite.update()
+                this.eSp.update()
             },
             render: function () {
-                this.entitySprite.render()
+                this.eSp.render()
             },
         })
 
-        this.globalX = globalX
-        this.globalY = globalY
+        this.gX = globalX
+        this.gY = globalY
         this.xRadius = xRadius
         this.yRadius = xRadius * 0.5
         this.type = type
 
-        this.coronaSprite = Sprite({
-            anchor: {x: 0.5, y: 0.8},
+        this.cSp = Sprite({ // cSp -> ShadowSprite
+            anchor: anchor,
             entity: this,
 
             render: function () {
@@ -49,18 +50,19 @@ export default class Entity extends GameObject.class {
             }
         })
 
-        this.shadowSprite = Sprite({
-            anchor: {x: 0.5, y: 0.8},
+        this.sSp = Sprite({ // sSp --> shadowSprite
+            anchor: anchor,
             entity: this,
             render: function () {
+                let ctx = this.context
                 // @ts-ignore
-                this.context.fillStyle = "rgba(0, 0, 0, 0.8)"
+                ctx.fillStyle = "rgb(0, 0, 0, 0.8)"
                 // @ts-ignore
-                this.context.beginPath()
+                ctx.beginPath()
                 // @ts-ignore
-                this.context.ellipse(0, 0, 4, 1.5, 0, 0, 2 * Math.PI)
+                ctx.ellipse(0, 0, 4, 1.5, 0, 0, 2 * Math.PI)
                 // @ts-ignore
-                this.context.fill()
+                ctx.fill()
             },
             update: function () {
                 this.x = this.entity.x
@@ -71,42 +73,43 @@ export default class Entity extends GameObject.class {
 
     update() {
         super.update()
-        this.shadowSprite.update()
-        this.coronaSprite.update()
-        this.deleteFlag = this.lifetime-- < 0 && !this.isInScreen()
+        this.sSp.update()
+        this.cSp.update()
+        this.del = this.lifetime-- < 0 && !this.isInScreen()
 
         this.advance()
-        this.x = this.globalX - this.world.tileEngine.sx
-        this.y = this.globalY - this.world.tileEngine.sy
+        this.x = this.gX - this.world.tE.sx
+        this.y = this.gY - this.world.tE.sy
     }
 
-    dist(obj2: Entity) {
-        return Math.sqrt(Math.pow(this.x - obj2.x, 2) + Math.pow(this.y - obj2.y, 2))
+    coll(o: Entity) {
+        return o != this && (this.x - o.x) ** 2 / o.xRadius ** 2 + (this.y - o.y) ** 2 / o.yRadius ** 2 <= 1
     }
 
     isInScreen() {
         return this.x > -3 && this.y > -5 && this.x < CANVAS_WIDTH + 2 && this.y < CANVAS_HEIGHT + 2
     }
 
-    setAnimationFromCharsSheet(t: number) {
-        this.entitySprite.animations = SpriteSheet({
+    setAnim(t: number) {
+        t *= 3
+        this.eSp.animations = SpriteSheet({
             image: imageAssets['chars'],
             frameWidth: 7,
             frameHeight: 12,
             animations: {
                 idle: {
-                    frames: t * 3 + 1,
+                    frames: t + 1,
                 },
                 walk: {
-                    frames: [t * 3, t * 3 + 1, t * 3 + 2, t * 3 + 1],
+                    frames: [t, t + 1, t + 2, t + 1],
                     frameRate: 5,
                 }
             }
         }).animations
     }
 
-    setImageFromTileSheet(pos: number) {
-        this.entitySprite.animations = SpriteSheet({
+    setImg(pos: number) {
+        this.eSp.animations = SpriteSheet({
             image: imageAssets['tiles'],
             frameWidth: 9,
             frameHeight: 9,
@@ -116,5 +119,9 @@ export default class Entity extends GameObject.class {
                 },
             }
         }).animations
+    }
+
+    play(a: string) {
+        this.eSp.playAnimation(a)
     }
 }
