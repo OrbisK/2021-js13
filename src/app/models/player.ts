@@ -10,6 +10,7 @@ export default class Player extends NPC {
     constructor() {
         super(50, 50, 0, 1.0, 0.7);
         this.type = -1;
+        this.life = 1000;
     }
 
     advance() {
@@ -50,13 +51,14 @@ export default class Player extends NPC {
                 if (child.type == 1) {
                     zzfx(...[, 0, 344, .07, .28, .19, , 1.04, .6, , 54, .05, .15, .1, , , , .83, .07]);
                     child.del = true;
+                    this.life = Math.min(1000, this.life + 200);
                 } else {
-                    // NPC collision logic
+                    this.life--;
                 }
             }
         }
 
-        if (this.gX > this.world.widthInTiles * 9) {
+        if (this.gX > this.world.wiT * 9) {
             World.newWorld(this.world)
         }
     }
