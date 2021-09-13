@@ -58,7 +58,8 @@ export default class Player extends NPC {
                     this.life -= 3;
                     if (this.life <= 0) {
                         World.started = false;
-                        if (+getSavedScore() < World.score()) document.cookie = "highscore=" + World.score()
+                        if (+getSavedScore() < World.score()) localStorage.setItem('highscore', `${World.score()}`);
+
                     }
                 }
             }
