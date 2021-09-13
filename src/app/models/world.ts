@@ -1,6 +1,6 @@
 import Entity from "./entity";
 import {imageAssets, keyPressed, randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
-import {CANVAS_HEIGHT, CANVAS_WIDTH, getCookie} from "../globals";
+import {CANVAS_HEIGHT, CANVAS_WIDTH, getSavedScore} from "../globals";
 import NPC from "./npc";
 // @ts-ignore
 import {zzfx} from 'ZzFX';
@@ -42,7 +42,7 @@ export default class World {
     player: Entity;
     crs: Array<Crossroad> = [];
     hiT: number;
-    wiT: number = 200;
+    wiT: number = 150;
     genTick: number;
     maxChild: number = 1;
     timer: number = 0;
@@ -78,6 +78,10 @@ export default class World {
         this.f()
 
         World.a = this
+    }
+
+    static score() {
+        return (World.worldCount - 1) * 195 + World.a.score
     }
 
     static newWorld(oldWorld: World) {
@@ -132,9 +136,9 @@ export default class World {
     getGroundTiles() {
         let groundTiles = [];
 
-        for (let i = 0; i < this.wiT / 100; i++) {
+        for (let i = 0; i < this.wiT / 70; i++) {
             let width = randInt(5, 12);
-            let start = randInt(i + 1, 100 * (i + 1) - 1 - width);
+            let start = randInt(i + 1, 70 * (i + 1) - 1 - width);
             this.crs.push(new Crossroad(start, start + width));
         }
 
@@ -253,7 +257,7 @@ export default class World {
     render() {
         this.tE.render();
         this.bg.render();
-        this.rCh.forEach(c => (c.sSp.render(), c instanceof NPC && c.type > 0 ? c.cSp.render() : null))
+        this.rCh.forEach(c => (c instanceof NPC && c.type > 0 ? c.cSp.render() : null, c.sSp.render()))
         this.rCh.forEach(c => c.render())
     }
 }
@@ -263,6 +267,7 @@ export class GUI {
     score: Text
     start: Text
     title: Text
+    end: Text
     coronaProb: Text
     color: string = 'rgb(250, 250, 250, 0.7)'
 
@@ -295,7 +300,7 @@ export class GUI {
         })
 
         this.start = Text({
-            text: "Press Enter to start the Game.\nHighscore: " + getCookie("highscore") + "m",
+            text: "Press Enter to start the Game.\nHighscore: " + getSavedScore() + "m",
             font: '8px Verdana',
             color: this.color,
             x: CANVAS_WIDTH / 2,
@@ -304,24 +309,37 @@ export class GUI {
             lineHeight: 1.5,
         })
 
-
+        this.end = Text({
+            text: "",
+            font: '8px Verdana',
+            color: this.color,
+            x: CANVAS_WIDTH / 2,
+            y: 20,
+            textAlign: 'center',
+            lineHeight: 1.5,
+        })
     }
 
     update() {
         // @ts-ignore
         if (keyPressed('enter') && World.a.player.life > 0) World.started = true
-        this.score.text = ((World.worldCount - 1) * 195 + World.a.score) + "m"
+        this.score.text = World.score() + "m"
         this.coronaProb.text = "Corona: " + ~~(100 - World.a.player.life / 10) + "%"
     }
 
     render() {
         // @ts-ignore
-        if (!World.started && World.a.player.life > 0) {
-            this.title.render()
-            this.start.render()
+        if (!World.started) {
+            Sprite({width: CANVAS_WIDTH, height: CANVAS_HEIGHT, color: "rgb(0,0,0,0.7)"}).render()
+            if (World.a.player.life > 0) {
+                this.title.render()
+                this.start.render()
+            } else {
+                this.end.text = "Your Score: " + World.score() + "m\nHighscore: " + getSavedScore() + "m\nPress F5 to restart"
+                this.end.render()
+            }
         }
         this.score.render()
         this.coronaProb.render()
     }
-
 }

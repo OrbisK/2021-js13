@@ -4,11 +4,11 @@ import NPC from "./npc";
 
 // @ts-ignore
 import {zzfx} from 'ZzFX';
-import {CANVAS_HEIGHT} from "../globals";
+import {CANVAS_HEIGHT, getSavedScore} from "../globals";
 
 export default class Player extends NPC {
     constructor() {
-        super(50, 50, 0, 1.0, 0.7);
+        super(50, 50, 0, 0.8, 0.7);
         this.type = -1;
         this.life = 1000;
     }
@@ -46,6 +46,8 @@ export default class Player extends NPC {
             this.gY += vy;
         }
 
+        if (this.world.timer % 2 == 0) return
+
         for (let child of this.world.uCh) {
             if (this.coll(child)) {
                 if (child.type == 1) {
@@ -56,6 +58,7 @@ export default class Player extends NPC {
                     this.life -= 3;
                     if (this.life <= 0) {
                         World.started = false;
+                        if (+getSavedScore() < World.score()) document.cookie = "highscore=" + World.score()
                     }
                 }
             }
