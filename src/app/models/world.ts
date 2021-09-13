@@ -63,8 +63,8 @@ export default class World {
         this.addChild(focusPoint)
 
         this.hiT = CANVAS_HEIGHT / 9
-        this.genTick = ~~(25 / World.worldCount) + 1
-        this.maxChild = Math.min(100, 40 + World.worldCount * 10)
+        this.genTick = ~~(25 / (World.worldCount / 2)) + 1
+        this.maxChild = Math.min(100, 40 + World.worldCount * 7)
 
         this.bg = Sprite({
             x: 0,
@@ -136,9 +136,12 @@ export default class World {
     getGroundTiles() {
         let groundTiles = [];
 
-        for (let i = 0; i < this.wiT / 70; i++) {
-            let width = randInt(5, 12);
-            let start = randInt(i + 1, 70 * (i + 1) - 1 - width);
+        for (let i = 0; i < this.wiT / 50; i++) {
+            let wMin = Math.min(15, 5 + World.worldCount)
+            let wMax = Math.min(25, 5 + World.worldCount * 2)
+            let width = randInt(wMin, wMax);
+
+            let start = randInt(50 * i + 1, 50 * (i + 1) + 2 - width);
             this.crs.push(new Crossroad(start, start + width));
         }
 
@@ -183,7 +186,7 @@ export default class World {
         let right = this.tE.sx + CANVAS_WIDTH;
         let xPos = randInt(right + 10, right + 50)
 
-        this.addChild(new NPC(xPos, yPos, npcType))
+        if (this.noCrossroadAt(xPos / 9)) this.addChild(new NPC(xPos, yPos, npcType))
     }
 
 
@@ -273,7 +276,7 @@ export class GUI {
 
     constructor() {
         this.title = Text({
-            text: 'Stay Safe!',
+            text: 'Stay Safe',
             font: '15px Verdana',
             color: this.color,
             x: CANVAS_WIDTH / 2,
@@ -324,7 +327,7 @@ export class GUI {
         // @ts-ignore
         if (keyPressed('enter') && World.a.player.life > 0) World.started = true
         this.score.text = World.score() + "m"
-        this.coronaProb.text = "Corona: " + ~~(100 - World.a.player.life / 10) + "%"
+        this.coronaProb.text = "COVID Risk: " + ~~(100 - World.a.player.life / 10) + "%"
     }
 
     render() {
