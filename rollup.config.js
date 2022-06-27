@@ -23,8 +23,7 @@ export default {
     plugins: [
         copy({
             assets: [
-                // You can include directories
-                "src/assets",
+                "assets/",
             ],
         }),
         kontra({
@@ -32,9 +31,11 @@ export default {
                 // enable only velocity and rotation functionality
                 anchor: true,
                 scale: true,
+                group: true,
             },
             sprite: {
                 animation: true,
+                image: true,
             },
             text: {
                 newline: true

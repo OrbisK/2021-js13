@@ -8,7 +8,7 @@
     "build": "run-s build:*",
     "build:js": "rollup -c",
     "build:html": "type dist/index.dist.html | html-inline -b dist | html-minifier -c html-minifier.json -o dist/index.html",
-    "build:zip": "7z a -mx=9  -m0=lzma -mfb=64 -md=32m dist/game.zip index.html main.min.js main.min.css assets/*.png",
+    "build:zip": "7z a -mx=9  -m0=lzma -mfb=64 -md=32m dist/game.zip index.html main.min.js main.min.css src/assets/*.png",
     "build:zip-size": "node zip-size.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +21,6 @@
     "eslint": "^7.32.0",
     "html-inline": "^1.2.0",
     "html-minifier": "^4.0.0",
-    "kontra": "^7.3.1",
     "npm-run-all": "^4.1.5",
     "rollup": "^2.56.2",
     "rollup-plugin-babel": "^4.4.0",
@@ -39,6 +38,7 @@
   },
   "dependencies": {
     "typescript": "^4.3.5",
-    "zzfx": "^1.1.8"
+    "zzfx": "^1.1.8",
+    "kontra": "^8.0.0"
   }
 }
