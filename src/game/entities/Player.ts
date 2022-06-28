@@ -5,6 +5,8 @@ import {keyPressed} from "kontra";
 import {CANVAS_HEIGHT} from "../globals";
 import {Level} from "../level/Level";
 import {Syringe} from "./Syringe";
+// @ts-ignore
+import {zzfx} from "ZzFX";
 
 export default class Player extends NPC {
     score: number = 0
@@ -63,6 +65,7 @@ export default class Player extends NPC {
             if (this.coll(entity)) {
                 if(entity instanceof NPC){
                     this.corona += entity.coronaPlus;
+                    zzfx(...[.1,,414,.01,.01,.06,,.21,3.9,,,,,1,-1,.5,,.75,.06])
                 }
                 if(entity instanceof Syringe){
                     this.level.removeEntity(entity)

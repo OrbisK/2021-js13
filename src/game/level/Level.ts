@@ -73,20 +73,12 @@ export class Level extends GameObjectClass{
     runTimer(){
         this.time += 1
 
-        if(this.time % this.tick != 0) {
-            return
-        }
-
-        if (randInt(0, 4 + this.walk) > 0) {
-            this.addWalkingNPC()
-        } else {
-            this.addNPC(0)
-        }
+        if(this.time % this.tick != 0) return
+        randInt(0, 4 + this.walk) > 0 ? this.addWalkingNPC() : this.addNPC(0)
 
         this.crossRoads.forEach(crossRoad => {
-            if (!crossRoad.visible(this.tileEngine.sx, this.tileEngine.sx + CANVAS_WIDTH + 200)) {
-                return
-            }
+            if (!crossRoad.visible(this.tileEngine.sx, this.tileEngine.sx + CANVAS_WIDTH + 200)) return
+
             this.addEntity(crossRoad.generateNPC())
         })
 
@@ -114,11 +106,7 @@ export class Level extends GameObjectClass{
         let y = randInt(10, CANVAS_HEIGHT - 5)
         let dx = dir * speed
 
-        if(randInt(0, 1) == 0){
-            this.addEntity(new MaskedNPC(x, y, this, dx, 0))
-        }else{
-            this.addEntity(new QNPC(x, y, this, dx, 0))
-        }
+        this.addEntity(randInt(0, 1) == 0 ? new MaskedNPC(x, y, this, dx, 0) : new QNPC(x, y, this, dx, 0))
     }
 
     addWalkingNPC(){
@@ -126,9 +114,7 @@ export class Level extends GameObjectClass{
     }
 
     addEntity(entity: Entity){
-        if(this.entities.length < this.maxEntities){
-            this.entities.push(entity)
-        }
+        this.entities.length < this.maxEntities && this.entities.push(entity)
     }
 
     removeEntity(entity: Entity){

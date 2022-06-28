@@ -35,7 +35,7 @@ export default {
             },
             sprite: {
                 animation: true,
-                image: true,
+                // image: true,
             },
             text: {
                 newline: true

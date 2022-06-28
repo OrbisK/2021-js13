@@ -11,7 +11,8 @@ import {zzfx} from "ZzFX";
 
 export class GameScene extends Scene{
     distance: Text = Text({...TEXT_PROPS, text: "0m", x: CANVAS_WIDTH - 40, y: 2, align: "right", font: FONT_SMALL})
-    corona: Text = Text({...TEXT_PROPS, text: "COVID Risk: 0%", x: CANVAS_WIDTH /2, y: 2, font: FONT_SMALL})
+    corona: Text = Text({...TEXT_PROPS, text: "", x: CANVAS_WIDTH /2, y: 2, font: FONT_SMALL})
+    street: Text = Text({...TEXT_PROPS, text: "", x: 16, y: 2, font: FONT_SMALL})
 
     level!: Level
     player!: Player
@@ -36,17 +37,18 @@ export class GameScene extends Scene{
         this.level.render()
         this.distance.render()
         this.corona.render()
+        this.street.render()
     }
 
     update(){
         this.level.update()
-        this.updateScore()
-        this.updateCorona()
-        this.updateLevel()
+        let score = this.player.score + this.previousLevelsDistance
+        this.distance.text = `${score.toFixed(1)}m`
+        this.corona.text = `COVID Risk: ${this.player.corona.toFixed(0)}%`
+        this.street.text = `Street ${this.difficulty}`
 
-        if(this.player.corona >= 100){
-            this.sceneManager.setScene('end').setScore(this.player.score + this.previousLevelsDistance)
-        }
+        this.player.globalX > this.level.pixelWidth() && this.startNextLevel()
+        this.player.corona >= 100 && this.sceneManager.setScene('end').setScore(score)
     }
 
     startNextLevel(){
@@ -56,20 +58,5 @@ export class GameScene extends Scene{
         this.level.addPlayerAt(this.player, 5, this.player.globalY)
         this.player.score = 0
         zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
-    }
-
-    updateScore(){
-        let score = this.player.score + this.previousLevelsDistance
-        this.distance.text = `${score.toFixed(1)}m`
-    }
-
-    updateCorona(){
-        this.corona.text = `COVID Risk: ${this.player.corona.toFixed(0)}%`
-    }
-
-    updateLevel(){
-        if (this.player.globalX > this.level.pixelWidth()) {
-            this.startNextLevel()
-        }
     }
 }

@@ -1,6 +1,3 @@
-// // // @ts-ignore
-// // import {zzfx} from 'ZzFX';
-
 import Player from "../entities/Player";
 import {imageAssets, randInt, Sprite, TileEngine} from "kontra";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
@@ -28,7 +25,7 @@ export default class LevelBuilder {
 
     setBackgroundColorLayer(color: string) {
         this.level.backgroundColorLayer = Sprite(
-            {x: 0, y: 0, height: CANVAS_HEIGHT, width: CANVAS_WIDTH, color: color}
+            {height: CANVAS_HEIGHT, width: CANVAS_WIDTH, color: color}
         )
         return this
     }
@@ -72,11 +69,7 @@ export default class LevelBuilder {
 
         for (let y = 0; y < this.level.numTilesHeight; y++) {
             for (let x = 0; x < this.level.numTilesWidth; x++) {
-                if ((y < 1 || y > this.level.numTilesHeight - 3) && this.noCrossroadAt(x)) {
-                    groundTiles.push(2)
-                } else {
-                    groundTiles.push(1)
-                }
+                (y < 1 || y > this.level.numTilesHeight - 3) && this.noCrossroadAt(x) ? groundTiles.push(2) : groundTiles.push(1)
             }
         }
 

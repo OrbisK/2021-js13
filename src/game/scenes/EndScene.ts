@@ -20,8 +20,7 @@ export class EndScene extends Scene{
     }
 
     setScore(score: number){
-        let highscore = parseInt(getSavedScore())
-        if(highscore < score){
+        if(parseInt(getSavedScore()) < score){
             localStorage.setItem('highscore', `${score.toFixed(1)}`)
         }
         this.endText.text = `Your Score: ${score.toFixed(1)}m\nHighscore: ${getSavedScore()}m\nPress Enter to restart`

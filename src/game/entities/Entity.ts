@@ -2,6 +2,7 @@ import {GameObjectClass, Sprite} from "kontra";
 import {Level} from "../level/Level";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
+const anchor = {anchor: {x: 0.5, y: 0.5}}
 class ScalableSprite extends GameObjectClass{
     sprite: Sprite
     entity: Entity
@@ -9,7 +10,7 @@ class ScalableSprite extends GameObjectClass{
     constructor(entity: Entity) {
         super();
         this.entity = entity
-        this.sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
+        this.sprite = Sprite(anchor)
         this.addChild(this.sprite)
     }
 
@@ -26,16 +27,13 @@ class ScalableSprite extends GameObjectClass{
 
 export default class Entity extends GameObjectClass {
     entitySprite: ScalableSprite
-    shadowSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
-    rangeSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
+    shadowSprite: Sprite = Sprite(anchor)
+    rangeSprite: Sprite = Sprite(anchor)
     radius: [number, number]
 
     globalX: number
     globalY: number
     level: Level
-
-    lifetime: number = 120
-    delete: boolean = false
 
     constructor(globalX: number, globalY: number, level: Level, radius: number = 8) {
         super()
@@ -72,22 +70,7 @@ export default class Entity extends GameObjectClass {
         return o != this && (this.x - o.x) ** 2 / o.radius[0] ** 2 + (this.y - o.y) ** 2 / o.radius[1] ** 2 <= 1
     }
 
-
     isInScreen() {
         return this.x > -3 && this.y > -5 && this.x < CANVAS_WIDTH + 2 && this.y < CANVAS_HEIGHT + 10
     }
-
-    //
-    // setImg(pos: number) {
-    //     this.eSp.animations = SpriteSheet({
-    //         image: imageAssets['tiles'],
-    //         frameWidth: 9,
-    //         frameHeight: 9,
-    //         animations: {
-    //             idle: {
-    //                 frames: pos,
-    //             },
-    //         }
-    //     }).animations
-    // }
 }
