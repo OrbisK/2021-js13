@@ -9,8 +9,8 @@ import {LevelDirector} from "../level/LevelDirector";
 import Player from "../entities/Player";
 
 export class GameScene extends Scene{
-    distance: Text = Text({...TEXT_PROPS, text: "0m", x: CANVAS_WIDTH - 30, y: 5, align: "right", font: FONT_SMALL})
-    corona: Text = Text({...TEXT_PROPS, text: "COVID Risk: 0%", x: CANVAS_WIDTH /2, y: 5, font: FONT_SMALL})
+    distance: Text = Text({...TEXT_PROPS, text: "0m", x: CANVAS_WIDTH - 40, y: 2, align: "right", font: FONT_SMALL})
+    corona: Text = Text({...TEXT_PROPS, text: "COVID Risk: 0%", x: CANVAS_WIDTH /2, y: 2, font: FONT_SMALL})
 
     level!: Level
     player!: Player
@@ -25,7 +25,7 @@ export class GameScene extends Scene{
         this.onShow = () => {
             this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
             this.player = new Player(-1, -1, this.level)
-            this.level.addPlayerAt(this.player, 20, 20)
+            this.level.addPlayerAt(this.player, 10, 20)
         }
     }
 
@@ -45,7 +45,7 @@ export class GameScene extends Scene{
         this.difficulty += 1
         this.previousLevelsDistance += this.level.numTilesWidth
         this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
-        this.level.addPlayerAt(this.player, 20, 20)
+        this.level.addPlayerAt(this.player, 2, this.player.globalY)
         this.player.score = 0
     }
     updateScore(){
