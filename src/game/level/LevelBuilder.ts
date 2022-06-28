@@ -101,14 +101,6 @@ export default class LevelBuilder {
 // //     timer: number = 0;
 // //     bg: Sprite; // background
 // //
-//     colors = [
-//         "rgb(0, 255, 0, 0.07)",
-//         "rgb(255, 0, 0, 0.07)",
-//         "rgb(0, 0, 255, 0.07)",
-//         "rgb(0, 255, 255, 0.07)",
-//         "rgb(255, 255, 0, 0.07)",
-//         "rgb(255, 0, 255, 0.07)",
-//     ]
 //
 //
 // //     constructor(focusPoint: Entity) {
@@ -124,18 +116,6 @@ export default class LevelBuilder {
 // //         this.f()
 // //
 // //         World.a = this
-// //     }
-// //
-// //     static score() {
-// //         return (World.worldCount - 1) * 195 + World.a.score
-// //     }
-// //
-// //     static newWorld(oldWorld: World) {
-// //         this.worldCount += 1;
-// //         zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
-// //         new World(oldWorld.player);
-// //         oldWorld.player.gX = 50;
-// //         oldWorld.player.gY = 50;
 // //     }
 // //
 // //
@@ -157,18 +137,7 @@ export default class LevelBuilder {
 // //         this.addChild(syringe, true)
 // //     }
 // //
-// //     wnpc(type: number = 1) { // walgind npc
-// //         let dir = randInt(0, 1) * 2 - 1;
 // //
-// //         let right = this.tE.sx + CANVAS_WIDTH;
-// //
-// //         this.addChild(new NPC(
-// //             dir > 0 ? randInt(-50, this.tE.sx - 10) : randInt(right + 10, right + 50),
-// //             randInt(10, CANVAS_HEIGHT - 5),
-// //             type,
-// //             dir * Math.max(0.3, rand()))
-// //         )
-// //     }
 // //
 // //     snpc(npcType: number = 1) { // standing npc
 // //         let yPos = randInt(10, CANVAS_HEIGHT - 5);

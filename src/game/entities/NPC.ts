@@ -11,12 +11,12 @@ export default class NPC extends Entity {
         this.dx = dx;
         this.dy = dy;
         this.dir = this.dx != 0 ? Math.sign(this.dx) : randInt(0, 1) * 2 - 1;
-        this.setScale(this.dir, 1);
+        this.entitySprite.setScale(this.dir, 1);
     }
 
     loadCharAnimation(t: number) {
         t *= 3
-        this.characterSprite.animations = SpriteSheet({
+        this.entitySprite.sprite.animations = SpriteSheet({
             image: imageAssets['chars'],
             frameWidth: 7,
             frameHeight: 12,
@@ -32,7 +32,16 @@ export default class NPC extends Entity {
         }).animations
     }
 
+    update(){
+        super.update()
+        this.life -= 1
+    }
+
     initAnimation(){
-        this.dx == 0 && this.dy == 0 ? this.characterSprite.playAnimation("idle") : this.characterSprite.playAnimation("walk")
+        this.dx == 0 && this.dy == 0 ? this.entitySprite.sprite.playAnimation("idle") : this.entitySprite.sprite.playAnimation("walk")
+    }
+
+    advance(){
+        this.globalX += this.dx
     }
 }

@@ -2,22 +2,41 @@ import {GameObjectClass, Sprite} from "kontra";
 import {Level} from "../level/Level";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
+class EntitySprite extends GameObjectClass{
+    sprite: Sprite
+    entity: Entity
+
+    constructor(entity: Entity) {
+        super();
+        this.entity = entity
+        this.sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
+        this.addChild(this.sprite)
+    }
+
+    update(){
+        this.x = this.entity.x
+        this.y = this.entity.y
+        super.update()
+    }
+}
+
 export default class Entity extends GameObjectClass {
-    characterSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
-    shadowSprite: Sprite = Sprite()
-    rangeSprite: Sprite = Sprite()
+    entitySprite: EntitySprite
+    shadowSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
+    rangeSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
     radius: [number, number]
 
     globalX: number
     globalY: number
     level: Level
 
-    // lifetime: number = 120
-    // del: boolean = false
+    lifetime: number = 120
+    delete: boolean = false
 
     constructor(globalX: number, globalY: number, level: Level, radius: number = 8) {
-        super({anchor: {x: 0.5, y: 0.8}})
+        super()
 
+        this.entitySprite = new EntitySprite(this)
         this.globalX = globalX
         this.globalY = globalY
         this.level = level
@@ -26,18 +45,16 @@ export default class Entity extends GameObjectClass {
         this.rangeSprite.render = () => {
             this.context.fillStyle = "rgba(255, 0, 0, 0.3)"
             this.context.beginPath()
-            this.context.ellipse(0, 6, this.radius[0], this.radius[1], 0, 0, 2 * Math.PI)
+            this.context.ellipse(this.x, this.y + 6, this.radius[0], this.radius[1], 0, 0, 2 * Math.PI)
             this.context.fill()
         }
 
         this.shadowSprite.render = () => {
             this.context.fillStyle = "rgb(0, 0, 0, 0.8)"
             this.context.beginPath()
-            this.context.ellipse(0, 6, 4, 1.5, 0, 0, 2 * Math.PI)
+            this.context.ellipse(this.x , this.y + 6, 4, 1.5, 0, 0, 2 * Math.PI)
             this.context.fill()
         }
-
-        this.addChild(this.rangeSprite, this.shadowSprite, this.characterSprite)
     }
 
     setRealX(){
@@ -51,6 +68,7 @@ export default class Entity extends GameObjectClass {
     update() {
         this.setRealX()
         this.setRealY()
+        this.entitySprite.update()
         super.update()
     }
 

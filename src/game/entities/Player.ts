@@ -34,14 +34,14 @@ export default class Player extends NPC {
 
         if (vx != 0 && this.dir != Math.sign(vx)) {
             this.dir *= -1
-            this.setScale(this.dir, 1)
+            this.entitySprite.setScale(this.dir, 1)
         }
 
         if (vx == 0 && vy == 0) {
-            this.characterSprite.playAnimation("idle")
-            this.characterSprite.animations["walk"].reset()
+            this.entitySprite.sprite.playAnimation("idle")
+            this.entitySprite.sprite.animations["walk"].reset()
         } else {
-            this.characterSprite.playAnimation("walk")
+            this.entitySprite.sprite.playAnimation("walk")
             if (this.globalY + vy < -2 || this.globalY + vy > CANVAS_HEIGHT - 10) vy = 0
         }
 

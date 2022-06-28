@@ -7,4 +7,9 @@ export default class MaskedNPC extends NPC {
         this.loadCharAnimation(1);
         this.initAnimation()
     }
+
+    update(){
+        super.update()
+    }
+
 }

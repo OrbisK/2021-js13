@@ -1,8 +1,8 @@
 import {GameObjectClass, randInt, seedRand, Sprite, TileEngine} from "kontra";
 import Player from "../entities/Player";
-import NPC from "../entities/NPC";
-import {CANVAS_HEIGHT} from "../globals";
+import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import MaskedNPC from "../entities/MaskedNPC";
+import Entity from "../entities/Entity";
 
 let rand = seedRand('x');
 
@@ -41,7 +41,7 @@ export class Level extends GameObjectClass{
     tileEngine!: TileEngine
     crossRoads: Array<CrossRoad> = []
     player!: Player
-    npcs!: Array<NPC>
+    entities: Array<Entity> = []
 
     constructor() {
         super()
@@ -55,6 +55,32 @@ export class Level extends GameObjectClass{
         this.player.level = this
         this.player.globalX = globalX
         this.player.globalY = globalY
+        this.entities.push(this.player)
+    }
+
+    addWalkingNPC() {
+        let dir = randInt(0, 1) * 2 - 1;
+        let right = this.tileEngine.sx + CANVAS_WIDTH;
+
+        let npc = new MaskedNPC(
+            dir > 0 ? randInt(-50, this.tileEngine.sx - 10) : randInt(right + 10, right + 50),
+            randInt(10, CANVAS_HEIGHT - 5),
+            this,
+            dir * Math.max(0.3, rand()),
+            0
+        )
+
+        this.entities.push(npc)
+    }
+
+    removeEntity(entity: Entity){
+        this.entities = this.entities.filter(function(value){
+            return value != entity;
+        });
+    }
+
+    sortEntities(){
+        this.entities.sort((e1, e2) => e1.globalY - e2.globalY)
     }
 
     pixelWidth(){
@@ -72,10 +98,13 @@ export class Level extends GameObjectClass{
     render(){
         this.tileEngine.render()
         this.backgroundColorLayer.render()
-        this.player?.render()
+        this.entities.forEach(entity => entity.rangeSprite.render())
+        this.entities.forEach(entity => entity.shadowSprite.render())
+        this.entities.forEach(entity => entity.entitySprite.render())
     }
 
     update(){
-        this.player.update()
+        this.sortEntities()
+        this.entities.forEach(entity => entity.update())
     }
 }

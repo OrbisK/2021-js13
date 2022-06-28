@@ -7,6 +7,8 @@ import LevelBuilder from "../level/LevelBuilder";
 import {Level} from "../level/Level";
 import {LevelDirector} from "../level/LevelDirector";
 import Player from "../entities/Player";
+// @ts-ignore
+import {zzfx} from "ZzFX";
 
 export class GameScene extends Scene{
     distance: Text = Text({...TEXT_PROPS, text: "0m", x: CANVAS_WIDTH - 40, y: 2, align: "right", font: FONT_SMALL})
@@ -26,6 +28,7 @@ export class GameScene extends Scene{
             this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
             this.player = new Player(-1, -1, this.level)
             this.level.addPlayerAt(this.player, 10, 20)
+            this.level.addWalkingNPC()
         }
     }
 
@@ -47,6 +50,7 @@ export class GameScene extends Scene{
         this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
         this.level.addPlayerAt(this.player, 2, this.player.globalY)
         this.player.score = 0
+        zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
     }
     updateScore(){
         let score = this.player.score + this.previousLevelsDistance
