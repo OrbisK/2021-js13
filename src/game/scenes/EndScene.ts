@@ -3,6 +3,7 @@ import {CANVAS_WIDTH, getSavedScore} from "../globals";
 import {TEXT_PROPS} from "../utils";
 import {SceneManager} from "./SceneManager";
 import {Scene} from "./Scene";
+import {GameScene} from "./GameScene";
 
 export class EndScene extends Scene{
     endText: Text = Text({...TEXT_PROPS, text: "", x: CANVAS_WIDTH / 2, y: 20})
@@ -13,12 +14,17 @@ export class EndScene extends Scene{
 
         this.onShow = () => {
             onKey('enter', () => {
+                this.sceneManager.scenes["game"] = new GameScene(this.sceneManager)
                 this.sceneManager.setScene("game")
             })
         }
     }
 
     setScore(score: number){
+        let highscore = parseInt(getSavedScore())
+        if(highscore < score){
+            localStorage.setItem('highscore', `${score.toFixed(1)}`)
+        }
         this.endText.text = `Your Score: ${score.toFixed(1)}m\nHighscore: ${getSavedScore()}m\nPress Enter to restart`
     }
 }

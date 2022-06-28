@@ -19,9 +19,10 @@ export class LevelDirector{
     buildLevelByDifficulty(difficulty: number){
         this.builder.reset()
         this.builder
-            .setWorldSize(80 * difficulty, 11)
+            .initDifficulty(difficulty)
+            .setWorldSize(70, 11)
             .setBackgroundColorLayer(this.colors[difficulty % this.colors.length])
-            .setTileEngine(1)
+            .setTileEngine(difficulty)
 
         return this.builder.getResult()
     }

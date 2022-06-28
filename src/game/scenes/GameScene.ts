@@ -1,4 +1,4 @@
-import {Text} from "kontra";
+import {onKey, Text} from "kontra";
 import {CANVAS_WIDTH} from "../globals";
 import {FONT_SMALL, TEXT_PROPS} from "../utils";
 import {SceneManager} from "./SceneManager";
@@ -25,10 +25,11 @@ export class GameScene extends Scene{
         this.levelDirector = new LevelDirector(new LevelBuilder())
 
         this.onShow = () => {
+            onKey('enter', () => {})
+
             this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
             this.player = new Player(-1, -1, this.level)
             this.level.addPlayerAt(this.player, 10, 20)
-            this.level.addWalkingNPC()
         }
     }
 
@@ -53,7 +54,7 @@ export class GameScene extends Scene{
         this.difficulty += 1
         this.previousLevelsDistance += this.level.numTilesWidth
         this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
-        this.level.addPlayerAt(this.player, 2, this.player.globalY)
+        this.level.addPlayerAt(this.player, 5, this.player.globalY)
         this.player.score = 0
         zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
     }

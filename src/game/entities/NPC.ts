@@ -36,6 +36,10 @@ export default class NPC extends Entity {
     update(){
         super.update()
         this.life -= 1
+
+        if(this.life < 0 && !this.isInScreen()){
+            this.level.removeEntity(this)
+        }
     }
 
     initAnimation(){
@@ -44,5 +48,6 @@ export default class NPC extends Entity {
 
     advance(){
         this.globalX += this.dx
+        this.globalY += this.dy
     }
 }

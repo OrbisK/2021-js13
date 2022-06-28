@@ -10,7 +10,7 @@ export default class Player extends NPC {
     corona: number = 0
 
     constructor(x: number, y: number, level: Level) {
-        super(x, y, level, 0.1, 2.7, 1.5)
+        super(x, y, level, 0.1, 1.0, 0.7)
         this.life = 1000
         this.loadCharAnimation(0)
     }
@@ -49,8 +49,8 @@ export default class Player extends NPC {
         if (this.x + vx < 4) vx = 0
 
         if(vx > 0){
-            let vsx_right = this.globalX - Math.min(this.level.getOffsetX() + 200, this.level.pixelWidth())
-            if (vsx_right > 0 && this.globalX < this.level.rightBorder) {
+            let vsx_right = this.globalX - Math.min(this.level.getOffsetX() + 160, this.level.pixelWidth())
+            if (vsx_right > 0 && this.globalX < this.level.pixelWidth() - 90) {
                 this.level.tileEngine.sx += vx
             }
         }

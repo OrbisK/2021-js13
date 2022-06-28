@@ -74,7 +74,7 @@ export default class Entity extends GameObjectClass {
 
 
     isInScreen() {
-        return this.x > -3 && this.y > -5 && this.x < CANVAS_WIDTH + 2 && this.y < CANVAS_HEIGHT + 2
+        return this.x > -3 && this.y > -5 && this.x < CANVAS_WIDTH + 2 && this.y < CANVAS_HEIGHT + 10
     }
 
     //

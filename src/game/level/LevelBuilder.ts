@@ -1,5 +1,3 @@
-// // import {imageAssets, keyPressed, randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
-// // import {CANVAS_HEIGHT, CANVAS_WIDTH, getSavedScore} from "../globals";
 // // // @ts-ignore
 // // import {zzfx} from 'ZzFX';
 
@@ -18,7 +16,6 @@ export default class LevelBuilder {
     setWorldSize(width: number, height: number) {
         this.level.numTilesWidth = width
         this.level.numTilesHeight = height
-        this.level.rightBorder = this.level.pixelWidth() - 50
         return this
     }
 
@@ -50,6 +47,14 @@ export default class LevelBuilder {
 
     getResult() {
         return this.level
+    }
+
+    initDifficulty(difficulty: number){
+        this.level.maxEntities = 50 + difficulty * 15
+        this.level.npcSpeed = Math.min(0.5, difficulty * 0.1)
+        this.level.tick = Math.max(10, 40 - difficulty * 3)
+        this.level.walk = difficulty - 1
+        return this
     }
 
     private initGroundTiles(crossRoadWidth: number) {
@@ -84,48 +89,7 @@ export default class LevelBuilder {
 }
 
 
-// //     static worldCount: number = 1;
-// //     static started: boolean = false;
-// //
-// //     uCh: Array<Entity> = [];
-// //     rCh: Array<Entity> = [];
-// //     score: number = 0;
-// //
-// //     tE: any;
-// //     player: Entity;
-// //     crs: Array<Crossroad> = [];
-// //     hiT: number;
-// //     wiT: number = 150;
-// //     genTick: number;
-// //     maxChild: number = 1;
-// //     timer: number = 0;
-// //     bg: Sprite; // background
-// //
 //
-//
-// //     constructor(focusPoint: Entity) {
-// //         this.player = focusPoint
-// //         this.addChild(focusPoint)
-// //
-// //         this.hiT = CANVAS_HEIGHT / 9
-// //         this.genTick = ~~(25 / (World.worldCount / 2)) + 1
-// //         this.maxChild = Math.min(100, 40 + World.worldCount * 7)
-// //
-// //
-// //         this.ite()
-// //         this.f()
-// //
-// //         World.a = this
-// //     }
-// //
-// //
-// //     addChild(child: Entity, force: boolean = false) {
-// //         if (force || this.uCh.length < this.maxChild) {
-// //             // @ts-ignore
-// //             child.world = this;
-// //             this.uCh.push(child);
-// //         }
-// //     }
 // //
 // //     syringe() {
 // //         zzfx(...[.5, 0, 566, , .06, .26, 1, .15, , , , , , , , , .08, .73, .02, .18])
@@ -147,17 +111,6 @@ export default class LevelBuilder {
 // //         if (this.noCrossroadAt(xPos / 9)) this.addChild(new NPC(xPos, yPos, npcType))
 // //     }
 
-// //     uaCh() { // update all children
-// //         let newUpdateChildren: Entity[] = []
-// //         let newRenderChildren: Entity[] = []
-// //
-// //         this.uCh.forEach(c => !c.del ? (c.update(), newUpdateChildren.push(c)) : null)
-// //         newUpdateChildren.sort((a: Entity, b: Entity) => a.y < b.y ? -1 : 1)
-// //         newUpdateChildren.forEach(c => c.isInScreen() ? newRenderChildren.push(c) : null)
-// //
-// //         this.uCh = newUpdateChildren
-// //         this.rCh = newRenderChildren
-// //     }
 // //
 // //     t() { // ticker
 // //         this.timer += 1;
@@ -173,28 +126,3 @@ export default class LevelBuilder {
 // //         if (this.timer % (this.genTick * 150) == 0) {
 // //             this.syringe()
 // //         }
-// //
-// //         for (let cr of this.crs) {
-// //             if (cr.visible(this.tE.sx, this.tE.sx + CANVAS_WIDTH + 200)) {
-// //                 if (this.timer % Math.max(~~(60 / World.worldCount) + 1, 20) == 0) {
-// //                     this.addChild(cr.getWalkingNPC())
-// //                 }
-// //             }
-// //         }
-// //     }
-// //
-// //     update() {
-// //         if (!World.started) return
-// //         this.t()
-// //         this.uaCh()
-// //         this.f()
-// //         this.score = Math.max(~~(this.player.gX / 9) - 5, this.score)
-// //     }
-// //
-// //     render() {
-// //         this.tE.render();
-// //         this.bg.render();
-// //         this.rCh.forEach(c => (c instanceof NPC && c.type > 0 ? c.cSp.render() : null, c.sSp.render()))
-// //         this.rCh.forEach(c => c.render())
-// //     }
-// }
