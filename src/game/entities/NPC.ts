@@ -1,6 +1,7 @@
 import Entity from "./entity";
 import {imageAssets, randInt, SpriteSheet} from "kontra";
 import {Level} from "../level/Level";
+import {CANVAS_WIDTH} from "../globals";
 
 export default class NPC extends Entity {
     life: number = 100
@@ -37,7 +38,7 @@ export default class NPC extends Entity {
         super.update()
         this.life -= 1
 
-        if(this.life < 0 && !this.isInScreen()){
+        if((this.life < 0 && !this.isInScreen()) || (this.x < -5 && this.dx <= 0) || (this.x > CANVAS_WIDTH + 5 && this.dx > 1)){
             this.level.removeEntity(this)
         }
     }

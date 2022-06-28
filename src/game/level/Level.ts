@@ -4,6 +4,9 @@ import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 import MaskedNPC from "../entities/MaskedNPC";
 import Entity from "../entities/Entity";
 import QNPC from "../entities/QNPC";
+import {Syringe} from "../entities/Syringe";
+// @ts-ignore
+import {zzfx} from "ZzFX";
 
 let rand = seedRand('x');
 
@@ -86,6 +89,14 @@ export class Level extends GameObjectClass{
             }
             this.addEntity(crossRoad.generateNPC())
         })
+
+        if(this.player.corona > 50 && randInt(0, 30) == 0 && this.player.x > 50){
+            zzfx(...[, 0, 344, .07, .28, .19, , 1.04, .6, , 54, .05, .15, .1, , , , .83, .07])
+            this.addEntity(new Syringe(
+                randInt(this.player.globalX - this.player.x, this.player.globalX - 20),
+                this.player.y, this
+            ))
+        }
     }
 
     addPlayerAt(player: Player, globalX: number, globalY: number){

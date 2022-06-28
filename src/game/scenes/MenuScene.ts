@@ -1,6 +1,5 @@
 import {onKey, Text} from "kontra";
-import {CANVAS_HEIGHT, CANVAS_WIDTH, getSavedScore} from "../globals";
-import {TEXT_PROPS} from "../utils";
+import {CANVAS_HEIGHT, CANVAS_WIDTH, getSavedScore, TEXT_PROPS} from "../globals";
 import {SceneManager} from "./SceneManager";
 import {Scene} from "./Scene";
 

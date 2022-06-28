@@ -26,5 +26,4 @@ export class LevelDirector{
 
         return this.builder.getResult()
     }
-
 }

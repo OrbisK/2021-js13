@@ -1,6 +1,5 @@
 import {onKey, Text} from "kontra";
-import {CANVAS_WIDTH} from "../globals";
-import {FONT_SMALL, TEXT_PROPS} from "../utils";
+import {CANVAS_WIDTH, FONT_SMALL, TEXT_PROPS} from "../globals";
 import {SceneManager} from "./SceneManager";
 import {Scene} from "./Scene";
 import LevelBuilder from "../level/LevelBuilder";
@@ -73,6 +72,4 @@ export class GameScene extends Scene{
             this.startNextLevel()
         }
     }
-
-
 }

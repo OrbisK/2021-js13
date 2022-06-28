@@ -60,13 +60,13 @@ export default class LevelBuilder {
     private initGroundTiles(crossRoadWidth: number) {
         let groundTiles: any = [];
 
-        for (let i = 0; i < this.level.numTilesWidth / 50; i++) {
+        for (let i = 0; i < this.level.numTilesWidth / 15; i++) {
             let width = randInt(
-                Math.min(15, 5 + crossRoadWidth),
-                Math.min(25, 5 + crossRoadWidth * 2)
+                Math.min(5, 5 + crossRoadWidth),
+                Math.min(15, 5 + crossRoadWidth * 2)
             );
 
-            let startX = randInt(50 * i + 1, 50 * (i + 1) + 2 - width)
+            let startX = randInt(15 * i + 20, 15 * (i + 1) + 2 - width)
             this.level.crossRoads.push(new CrossRoad(startX, startX + width, this.level))
         }
 
@@ -87,42 +87,3 @@ export default class LevelBuilder {
         return this.level.crossRoads.every((crossRoad: { startTileX: number; endTileX: number; }) => (x < crossRoad.startTileX || x > crossRoad.endTileX))
     }
 }
-
-
-//
-// //
-// //     syringe() {
-// //         zzfx(...[.5, 0, 566, , .06, .26, 1, .15, , , , , , , , , .08, .73, .02, .18])
-// //         let left = this.tE.sx + 50
-// //         let xPos = randInt(left, Math.max(left, this.player.gX - 10))
-// //         let yPos = randInt(20, CANVAS_HEIGHT - 20)
-// //         let syringe = new Entity(xPos, yPos, 1)
-// //         syringe.setImg(2)
-// //         this.addChild(syringe, true)
-// //     }
-// //
-// //
-// //
-// //     snpc(npcType: number = 1) { // standing npc
-// //         let yPos = randInt(10, CANVAS_HEIGHT - 5);
-// //         let right = this.tE.sx + CANVAS_WIDTH;
-// //         let xPos = randInt(right + 10, right + 50)
-// //
-// //         if (this.noCrossroadAt(xPos / 9)) this.addChild(new NPC(xPos, yPos, npcType))
-// //     }
-
-// //
-// //     t() { // ticker
-// //         this.timer += 1;
-// //
-// //         if (this.timer % this.genTick == 0) {
-// //             if (randInt(0, 4 + World.worldCount) > 0) {
-// //                 this.wnpc(randInt(1, 2))
-// //             } else {
-// //                 this.snpc(randInt(1, 2))
-// //             }
-// //         }
-// //
-// //         if (this.timer % (this.genTick * 150) == 0) {
-// //             this.syringe()
-// //         }

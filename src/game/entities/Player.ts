@@ -1,9 +1,10 @@
-// import {zzfx} from 'ZzFX';
+
 
 import NPC from "./NPC";
 import {keyPressed} from "kontra";
 import {CANVAS_HEIGHT} from "../globals";
 import {Level} from "../level/Level";
+import {Syringe} from "./Syringe";
 
 export default class Player extends NPC {
     score: number = 0
@@ -63,15 +64,11 @@ export default class Player extends NPC {
                 if(entity instanceof NPC){
                     this.corona += entity.coronaPlus;
                 }
-//                 if (child.type == 1) {
-//                     zzfx(...[, 0, 344, .07, .28, .19, , 1.04, .6, , 54, .05, .15, .1, , , , .83, .07]);
-//                 } else {
-//                     this.life -= 3;
-//                     }
-//                 }
+                if(entity instanceof Syringe){
+                    this.level.removeEntity(entity)
+                    this.corona = Math.max(0, this.corona - 20)
+                }
             }
         }
-//
-
     }
 }
