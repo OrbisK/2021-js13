@@ -1,11 +1,7 @@
-// // import Entity from "./entity";
 // // import {imageAssets, keyPressed, randInt, seedRand, Sprite, Text, TileEngine} from "kontra";
 // // import {CANVAS_HEIGHT, CANVAS_WIDTH, getSavedScore} from "../globals";
-// // import NPC from "./npc";
 // // // @ts-ignore
 // // import {zzfx} from 'ZzFX';
-// //
-// import Player from "../entities/Player";
 
 import Player from "../entities/Player";
 import {imageAssets, randInt, Sprite, TileEngine} from "kontra";
@@ -25,8 +21,10 @@ export default class LevelBuilder {
         return this
     }
 
-    addPlayerAt(x: number, y: number) {
-        this.level.player = new Player(x, y, this.level)
+    addPlayerAt(player: Player, x: number, y: number) {
+        player.globalX = x
+        player.globalY = y
+        this.level.player = player
         return this
     }
 

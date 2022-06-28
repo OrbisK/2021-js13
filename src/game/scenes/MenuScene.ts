@@ -6,7 +6,7 @@ import {Scene} from "./Scene";
 
 export class MenuScene extends Scene{
     title: Text = Text({
-        ...TEXT_PROPS, text: 'Stay Safe', x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2 - 35,
+        ...TEXT_PROPS, text: '<Stay Safe>', x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2 - 35,
     })
     score: Text = Text({
         ...TEXT_PROPS, text: "Press Enter to start the Game.\nHighscore: " + getSavedScore() + "m",

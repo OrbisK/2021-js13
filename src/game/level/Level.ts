@@ -48,6 +48,16 @@ export class Level extends GameObjectClass{
         this.numTilesHeight = 11
     }
 
+    addPlayerAt(player: Player, globalX: number, globalY: number){
+        this.player = player
+        this.player.globalX = globalX
+        this.player.globalY = globalY
+    }
+
+    pixelWidth(){
+        return this.numTilesWidth * this.tileWidth
+    }
+
     getOffsetX(){
         return this.tileEngine ? this.tileEngine.sx : 0
     }
@@ -59,7 +69,7 @@ export class Level extends GameObjectClass{
     render(){
         this.tileEngine.render()
         this.backgroundColorLayer.render()
-        this.player.render()
+        this.player?.render()
     }
 
     update(){
