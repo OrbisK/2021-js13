@@ -41,7 +41,12 @@ export class GameScene extends Scene{
     update(){
         this.level.update()
         this.updateScore()
+        this.updateCorona()
         this.updateLevel()
+
+        if(this.player.corona >= 100){
+            this.sceneManager.setScene('end').setScore(this.player.score + this.previousLevelsDistance)
+        }
     }
 
     startNextLevel(){
@@ -52,9 +57,14 @@ export class GameScene extends Scene{
         this.player.score = 0
         zzfx(...[, , 624, .01, .17, .44, , 1.88, , .7, 143, .05, , , , , , .66, .02, .48]);
     }
+
     updateScore(){
         let score = this.player.score + this.previousLevelsDistance
         this.distance.text = `${score.toFixed(1)}m`
+    }
+
+    updateCorona(){
+        this.corona.text = `COVID Risk: ${this.player.corona.toFixed(0)}%`
     }
 
     updateLevel(){
@@ -63,7 +73,5 @@ export class GameScene extends Scene{
         }
     }
 
-    setCorona(percent: number){
-        this.corona.text = `COVID Risk: ${percent}%`
-    }
+
 }

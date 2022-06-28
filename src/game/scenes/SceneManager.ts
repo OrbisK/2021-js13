@@ -21,5 +21,6 @@ export class SceneManager extends GameObjectClass{
         this.activeScene?.hide()
         this.activeScene = this.scenes[type]
         this.activeScene.show()
+        return this.activeScene
     }
 }

@@ -4,6 +4,7 @@ import {Level} from "../level/Level";
 
 export default class NPC extends Entity {
     life: number = 100
+    coronaPlus: number = 0.6
 
     constructor(x: number, y: number, level: Level, radius: number = 0, dx: number = 0.0, dy: number = 0.0) {
         super(x, y, level, radius)

@@ -2,7 +2,7 @@ import {GameObjectClass, Sprite} from "kontra";
 import {Level} from "../level/Level";
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../globals";
 
-class EntitySprite extends GameObjectClass{
+class ScalableSprite extends GameObjectClass{
     sprite: Sprite
     entity: Entity
 
@@ -18,10 +18,14 @@ class EntitySprite extends GameObjectClass{
         this.y = this.entity.y
         super.update()
     }
+
+    playAnimation(anim: string){
+        this.sprite.playAnimation(anim)
+    }
 }
 
 export default class Entity extends GameObjectClass {
-    entitySprite: EntitySprite
+    entitySprite: ScalableSprite
     shadowSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
     rangeSprite: Sprite = Sprite({anchor: {x: 0.5, y: 0.5}})
     radius: [number, number]
@@ -36,7 +40,7 @@ export default class Entity extends GameObjectClass {
     constructor(globalX: number, globalY: number, level: Level, radius: number = 8) {
         super()
 
-        this.entitySprite = new EntitySprite(this)
+        this.entitySprite = new ScalableSprite(this)
         this.globalX = globalX
         this.globalY = globalY
         this.level = level
@@ -57,23 +61,15 @@ export default class Entity extends GameObjectClass {
         }
     }
 
-    setRealX(){
-        this.x = this.globalX - this.level.getOffsetX()
-    }
-
-    setRealY(){
-        this.y = this.globalY - this.level.getOffsetY()
-    }
-
     update() {
-        this.setRealX()
-        this.setRealY()
+        this.x = this.globalX - this.level.getOffsetX()
+        this.y = this.globalY - this.level.getOffsetY()
         this.entitySprite.update()
         super.update()
     }
 
     coll(o: Entity) {
-        return o != this && (this.x - o.x) ** 2 / o.xRadius ** 2 + (this.y - o.y) ** 2 / o.yRadius ** 2 <= 1
+        return o != this && (this.x - o.x) ** 2 / o.radius[0] ** 2 + (this.y - o.y) ** 2 / o.radius[1] ** 2 <= 1
     }
 
 

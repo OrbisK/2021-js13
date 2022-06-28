@@ -7,9 +7,10 @@ import {Level} from "../level/Level";
 
 export default class Player extends NPC {
     score: number = 0
+    corona: number = 0
 
     constructor(x: number, y: number, level: Level) {
-        super(x, y, level, 0.1, 2.7, 0.5)
+        super(x, y, level, 0.1, 2.7, 1.5)
         this.life = 1000
         this.loadCharAnimation(0)
     }
@@ -57,24 +58,19 @@ export default class Player extends NPC {
         this.globalX += vx
         this.globalY += vy
 
-//         if (this.world.timer % 2 == 0) return
-//
-//         for (let child of this.world.uCh) {
-//             if (this.coll(child)) {
+        for (let entity of this.level.entities) {
+            if (this.coll(entity)) {
+                if(entity instanceof NPC){
+                    this.corona += entity.coronaPlus;
+                }
 //                 if (child.type == 1) {
 //                     zzfx(...[, 0, 344, .07, .28, .19, , 1.04, .6, , 54, .05, .15, .1, , , , .83, .07]);
-//                     child.del = true;
-//                     this.life = Math.min(1000, this.life + 200);
 //                 } else {
 //                     this.life -= 3;
-//                     if (this.life <= 0) {
-//                         World.started = false;
-//                         if (+getSavedScore() < World.score()) localStorage.setItem('highscore', `${World.score()}`);
-//
 //                     }
 //                 }
-//             }
-//         }
+            }
+        }
 //
 
     }

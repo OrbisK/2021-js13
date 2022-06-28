@@ -5,7 +5,7 @@ import {SceneManager} from "./SceneManager";
 import {Scene} from "./Scene";
 
 export class EndScene extends Scene{
-    endText: Text = Text({...TEXT_PROPS, text: "", x: CANVAS_WIDTH, y: 5})
+    endText: Text = Text({...TEXT_PROPS, text: "", x: CANVAS_WIDTH / 2, y: 20})
 
     constructor(sceneManager: SceneManager) {
         super(sceneManager)
@@ -19,7 +19,6 @@ export class EndScene extends Scene{
     }
 
     setScore(score: number){
-        this.endText.text = `Your Score: ${score}m\nHighscore: ${getSavedScore()}m\nPress Enter to restart`
+        this.endText.text = `Your Score: ${score.toFixed(1)}m\nHighscore: ${getSavedScore()}m\nPress Enter to restart`
     }
-
 }
