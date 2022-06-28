@@ -35,6 +35,7 @@ export class Level extends GameObjectClass{
     numTilesHeight: number
     tileWidth: number = 9
     tileHeight: number = 9
+    rightBorder: number
 
     backgroundColorLayer: Sprite = Sprite()
     tileEngine!: TileEngine
@@ -46,10 +47,12 @@ export class Level extends GameObjectClass{
         super()
         this.numTilesWidth = 100
         this.numTilesHeight = 11
+        this.rightBorder = this.pixelWidth() - 50
     }
 
     addPlayerAt(player: Player, globalX: number, globalY: number){
         this.player = player
+        this.player.level = this
         this.player.globalX = globalX
         this.player.globalY = globalY
     }

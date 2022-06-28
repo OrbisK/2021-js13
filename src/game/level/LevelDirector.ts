@@ -21,7 +21,7 @@ export class LevelDirector{
         this.builder
             .setWorldSize(80 * difficulty, 11)
             .setBackgroundColorLayer(this.colors[difficulty % this.colors.length])
-            .setTileEngine(difficulty)
+            .setTileEngine(1)
 
         return this.builder.getResult()
     }

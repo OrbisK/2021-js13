@@ -7,11 +7,9 @@ import {Level} from "../level/Level";
 
 export default class Player extends NPC {
     score: number = 0
-    rightBorder: number
 
     constructor(x: number, y: number, level: Level) {
-        super(x, y, level, 0.1, 1.7, 0.5)
-        this.rightBorder = this.level.pixelWidth() - 50
+        super(x, y, level, 0.1, 2.7, 0.5)
         this.life = 1000
         this.loadCharAnimation(0)
     }
@@ -51,17 +49,13 @@ export default class Player extends NPC {
 
         if(vx > 0){
             let vsx_right = this.globalX - Math.min(this.level.getOffsetX() + 200, this.level.pixelWidth())
-            if (vsx_right > 0 && this.globalX < this.rightBorder) {
+            if (vsx_right > 0 && this.globalX < this.level.rightBorder) {
                 this.level.tileEngine.sx += vx
             }
         }
 
         this.globalX += vx
         this.globalY += vy
-
-        if (this.globalX > this.level.pixelWidth()) {
-            // World.newWorld(this.world)
-        }
 
 //         if (this.world.timer % 2 == 0) return
 //

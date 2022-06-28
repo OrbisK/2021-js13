@@ -18,6 +18,7 @@ export default class LevelBuilder {
     setWorldSize(width: number, height: number) {
         this.level.numTilesWidth = width
         this.level.numTilesHeight = height
+        this.level.rightBorder = this.level.pixelWidth() - 50
         return this
     }
 

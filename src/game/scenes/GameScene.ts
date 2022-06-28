@@ -22,30 +22,41 @@ export class GameScene extends Scene{
         super(sceneManager)
         this.levelDirector = new LevelDirector(new LevelBuilder())
 
-
         this.onShow = () => {
             this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
             this.player = new Player(-1, -1, this.level)
             this.level.addPlayerAt(this.player, 20, 20)
-
-            this.addChild(this.level, this.distance, this.corona)
         }
     }
 
+    render(){
+        this.level.render()
+        this.distance.render()
+        this.corona.render()
+    }
+
     update(){
-        super.update()
+        this.level.update()
         this.updateScore()
+        this.updateLevel()
     }
 
     startNextLevel(){
         this.difficulty += 1
-        this.previousLevelsDistance += this.level.tileWidth
+        this.previousLevelsDistance += this.level.numTilesWidth
         this.level = this.levelDirector.buildLevelByDifficulty(this.difficulty)
         this.level.addPlayerAt(this.player, 20, 20)
+        this.player.score = 0
     }
     updateScore(){
         let score = this.player.score + this.previousLevelsDistance
         this.distance.text = `${score.toFixed(1)}m`
+    }
+
+    updateLevel(){
+        if (this.player.globalX > this.level.pixelWidth()) {
+            this.startNextLevel()
+        }
     }
 
     setCorona(percent: number){
