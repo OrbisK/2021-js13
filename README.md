@@ -1,6 +1,7 @@
 # Stay Safe -- GameJam Entry
 
-Entry of the [2021 JS13K GameJam](https://js13kgames.com/entries/stay-safe).
+Entry of the [2021 JS13K GameJam](https://js13kgames.com/entries/stay-safe).  
+By Christian and Robin
 
 ![Menu Screen](img/menu.png)
 
