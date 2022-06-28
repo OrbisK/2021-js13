@@ -2,9 +2,9 @@
 
 Entry of the [2021 JS13K GameJam](https://js13kgames.com/entries/stay-safe).
 
-![Menu Screen](img/img.png)
+![Menu Screen](img/menu.png)
 
-![Gameplay](img/img_1.png)
+![Gameplay](img/gameplay.png)
 
 **Description**  
 Do you ever feel unpleasant when travelling through crowded places? Now that Corona has entered
